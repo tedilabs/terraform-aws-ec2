@@ -1,0 +1,5 @@
+# Modules
+":floppy_disk: instance":
+- modules/instance/**/*
+":floppy_disk: instance-group":
+- modules/instance-group/**/*
