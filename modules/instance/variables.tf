@@ -27,6 +27,24 @@ variable "instance_ssh_key" {
 # }
 #
 
+variable "availability_zone" {
+  description = "(Optional) AZ (Availability Zone) to create the instance in."
+  type        = string
+  default     = null
+}
+
+variable "stop_protection_enabled" {
+  description = "(Optional) Indicates whether stop of the instance via the AWS API will be protected. Defaults to `false`."
+  type        = bool
+  default     = false
+}
+
+variable "termination_protection_enabled" {
+  description = "(Optional) Indicates whether termination of the instance via the AWS API will be protected. Defaults to `false`."
+  type        = bool
+  default     = false
+}
+
 variable "spot_enabled" {
   description = "(Optional) Whether to create the instance as a spot instance."
   type        = bool

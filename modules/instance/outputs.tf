@@ -19,6 +19,11 @@ output "instance_state" {
   value       = try(aws_instance.this[0].instance_state, aws_spot_instance_request.this[0].instance_state)
 }
 
+output "availability_zone" {
+  description = "The Availability Zone of the instance."
+  value       = try(aws_instance.this[0].availability_zone, aws_spot_instance_request.this[0].availability_zone)
+}
+
 output "private_domain" {
   description = "The private DNS name assigned to the instance. Can only be used inside the Amazon EC2, and only available if you've enabled DNS hostnames for your VPC."
   value       = try(aws_instance.this[0].private_dns, aws_spot_instance_request.this[0].private_dns)
@@ -39,7 +44,20 @@ output "public_ip" {
   value       = try(aws_instance.this[0].public_ip, aws_spot_instance_request.this[0].public_ip)
 }
 
+output "attributes" {
+  description = "A set of attributes that applied to the instance."
+  value = {
+    stop_protection_enabled        = try(aws_instance.this[0].disable_api_stop, aws_spot_instance_request.this[0].disable_api_stop)
+    termination_protection_enabled = try(aws_instance.this[0].disable_api_termination, aws_spot_instance_request.this[0].disable_api_termination)
+  }
+}
+
 output "test" {
   description = "The configuration of rule groups associated with the firewall."
-  value       = try(aws_instance.this[0], aws_spot_instance_request.this[0])
+  value = {
+    for k, v in try(aws_instance.this[0], aws_spot_instance_request.this[0]) :
+    k => v
+    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops"], k)
+  }
+
 }
