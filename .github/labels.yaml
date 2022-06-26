@@ -46,3 +46,6 @@
 - color: "fbca04"
   description: "This issue or pull request is related to instance-group module."
   name: ":floppy_disk: instance-group"
+- color: "fbca04"
+  description: "This issue or pull request is related to placement-group module."
+  name: ":floppy_disk: placement-group"
