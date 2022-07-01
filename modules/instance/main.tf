@@ -14,6 +14,10 @@ locals {
   } : {}
 }
 
+locals {
+  is_t_type = replace(var.instance_type, "/^t(2|3|3a){1}\\..*$/", "1") == "1" ? true : false
+}
+
 
 ###################################################
 # EC2 Instance
@@ -26,7 +30,6 @@ locals {
 # - `instance_initiated_shutdown_behavior`
 #
 # - `source_dest_check`
-# - `subnet_id`
 #
 # - `ipv6_address_count`
 # - `ipv6_addresses`
@@ -42,9 +45,6 @@ locals {
 # - `ebs_block_optimized`
 #
 # - `capacity_reservation_specification`
-# - `cpu_core_count`
-# - `cpu_threads_per_core`
-# - `credit_specification`
 # - `enclave_options`
 # - `get_password_data`
 # - `hibernation`
@@ -63,7 +63,6 @@ locals {
 # - `user_data_replace_on_change`
 #
 # - `volume_tags`
-# - `timeouts`
 resource "aws_instance" "this" {
   count = var.spot_enabled ? 0 : 1
 
@@ -71,16 +70,32 @@ resource "aws_instance" "this" {
   instance_type = var.instance_type
   key_name      = var.instance_ssh_key
 
+  cpu_core_count       = try(var.cpu_options.core_count, null)
+  cpu_threads_per_core = try(var.cpu_options.threads_per_core, null)
+
+  credit_specification {
+    cpu_credits = (local.is_t_type
+      ? lower(var.cpu_credit_specification)
+      : null
+    )
+  }
+
 
   ## Network Configuration
   availability_zone = var.availability_zone
-  # subnet_id     = tolist(data.aws_subnet_ids.my-subnets.ids)[0]
+  subnet_id         = var.subnet_id
   # vpc_security_group_ids = [aws_security_group.web.id]
 
 
   ## Attributes
   disable_api_stop        = var.stop_protection_enabled
   disable_api_termination = var.termination_protection_enabled
+
+  timeouts {
+    create = var.timeouts.create
+    update = var.timeouts.update
+    delete = var.timeouts.delete
+  }
 
   tags = merge(
     {
@@ -99,15 +114,32 @@ resource "aws_spot_instance_request" "this" {
   key_name      = var.instance_ssh_key
 
 
+  ## CPU
+  cpu_core_count       = try(var.cpu_options.core_count, null)
+  cpu_threads_per_core = try(var.cpu_options.threads_per_core, null)
+
+  credit_specification {
+    cpu_credits = (local.is_t_type
+      ? lower(var.cpu_credit_specification)
+      : null
+    )
+  }
+
+
   ## Network Configuration
   availability_zone = var.availability_zone
-  # subnet_id     = tolist(data.aws_subnet_ids.my-subnets.ids)[0]
+  subnet_id         = var.subnet_id
   # vpc_security_group_ids = [aws_security_group.web.id]
 
 
   ## Attributes
   disable_api_stop        = var.stop_protection_enabled
   disable_api_termination = var.termination_protection_enabled
+
+  timeouts {
+    create = var.timeouts.create
+    delete = var.timeouts.delete
+  }
 
   tags = merge(
     {

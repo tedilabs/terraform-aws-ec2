@@ -14,7 +14,7 @@ output "name" {
 }
 
 # TODO: Capitalize
-output "instance_state" {
+output "state" {
   description = "The state of the instance. One of: `pending`, `running`, `shutting-down`, `terminated`, `stopping`, `stopped`."
   value       = try(aws_instance.this[0].instance_state, aws_spot_instance_request.this[0].instance_state)
 }
@@ -22,6 +22,11 @@ output "instance_state" {
 output "availability_zone" {
   description = "The Availability Zone of the instance."
   value       = try(aws_instance.this[0].availability_zone, aws_spot_instance_request.this[0].availability_zone)
+}
+
+output "subnet_id" {
+  description = "The ID of subnet of the launched instance."
+  value       = try(aws_instance.this[0].subnet_id, aws_spot_instance_request.this[0].subnet_id)
 }
 
 output "private_domain" {
@@ -44,6 +49,20 @@ output "public_ip" {
   value       = try(aws_instance.this[0].public_ip, aws_spot_instance_request.this[0].public_ip)
 }
 
+output "cpu_options" {
+  description = "The CPU options for the instance."
+  value = {
+    core_count = try(aws_instance.this[0].cpu_core_count,
+    aws_spot_instance_request.this[0].cpu_core_count)
+    threads_per_core = try(aws_instance.this[0].cpu_threads_per_core, aws_spot_instance_request.this[0].cpu_threads_per_core)
+  }
+}
+
+output "cpu_credit_specification" {
+  description = "The CPU credit specification for the instance."
+  value       = try(upper(aws_instance.this[0].credit_specification[0].cpu_credits), upper(aws_spot_instance_request.this[0].credit_specification[0].cpu_credits))
+}
+
 output "attributes" {
   description = "A set of attributes that applied to the instance."
   value = {
@@ -57,7 +76,7 @@ output "test" {
   value = {
     for k, v in try(aws_instance.this[0], aws_spot_instance_request.this[0]) :
     k => v
-    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops"], k)
+    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification"], k)
   }
 
 }

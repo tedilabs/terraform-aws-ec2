@@ -33,24 +33,64 @@ variable "availability_zone" {
   default     = null
 }
 
+variable "subnet_id" {
+  description = "(Optional) The ID of subnet in which to launch the instance."
+  type        = string
+  default     = null
+}
+
+# INFO: This option is only supported on creation of instance type that support CPU Options
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-optimize-cpu.html#cpu-options-supported-instances-values
+variable "cpu_options" {
+  description = <<EOF
+  (Optional) The configuration of the CPU options to optimize the instance for specific workloads or business needs. You can specify these CPU options during instance launch. There is no additional or reduced charge for specifying CPU options. `cpu_options` block as defined below.
+    (Optional) `core_count` - Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API.
+    (Optional) `threads_per_core` - Set the number of CPU threads per core for the instance. If set to to 1, hyperthreading is disabled on the launched instance.
+  EOF
+  type = object({
+    core_count       = number
+    threads_per_core = number
+  })
+  default = null
+}
+
+variable "cpu_credit_specification" {
+  description = "(Optional) The specification for CPU credit. A credit specification is only available for T2, T3, and T3a instances. Valid values are `STANDARD` or `UNLIMITED`. T3 instances are launched as `UNLIMITED` by default. T2 instances are launched as `STANDARD` by default."
+  type        = string
+  default     = null
+}
+
 variable "stop_protection_enabled" {
   description = "(Optional) Indicates whether stop of the instance via the AWS API will be protected. Defaults to `false`."
   type        = bool
   default     = false
+  nullable    = false
 }
 
 variable "termination_protection_enabled" {
   description = "(Optional) Indicates whether termination of the instance via the AWS API will be protected. Defaults to `false`."
   type        = bool
   default     = false
+  nullable    = false
 }
 
 variable "spot_enabled" {
   description = "(Optional) Whether to create the instance as a spot instance."
   type        = bool
   default     = false
+  nullable    = false
 }
 
+variable "timeouts" {
+  description = "(Optional) How long to wait for the instance to be created/updated/deleted."
+  type        = map(string)
+  default = {
+    create = "10m"
+    update = "10m"
+    delete = "20m"
+  }
+  nullable = false
+}
 
 variable "tags" {
   description = "(Optional) A map of tags to add to all resources."
