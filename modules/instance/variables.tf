@@ -60,6 +60,12 @@ variable "cpu_credit_specification" {
   default     = null
 }
 
+variable "shutdown_behavior" {
+  description = "(Optional) The instance behavior when an OS-level shutdown is performed. Instances can be either terminated or stopped. Valid values are `STOP` or `TERMINATE`. Amazon defaults this to `STOP` for EBS-backed instances and `TERMINATE` for instance-store instances. Cannot be set on instance-store instances."
+  type        = string
+  default     = null
+}
+
 variable "stop_protection_enabled" {
   description = "(Optional) Indicates whether stop of the instance via the AWS API will be protected. Defaults to `false`."
   type        = bool
@@ -72,6 +78,18 @@ variable "termination_protection_enabled" {
   type        = bool
   default     = false
   nullable    = false
+}
+
+variable "auto_recovery_enabled" {
+  description = "(Optional) Whether to enable auto-recovery for the instance. Instance auto-recovery recovers your instance if system status checks fail. By default, shared tenancy without local storage and GPUs are set to auto-recover."
+  type        = bool
+  default     = null
+}
+
+variable "monitoring_enabled" {
+  description = "(Optional) If true, the launched EC2 instance will have detailed monitoring enabled."
+  type        = bool
+  default     = null
 }
 
 variable "spot_enabled" {

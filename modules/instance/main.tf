@@ -27,7 +27,6 @@ locals {
 # - `security_groups`
 #
 # - `iam_instance_profile`
-# - `instance_initiated_shutdown_behavior`
 #
 # - `source_dest_check`
 #
@@ -49,9 +48,7 @@ locals {
 # - `get_password_data`
 # - `hibernation`
 # - `launch_template`
-# - `maintenance_options`
 # - `metadata_options`
-# - `monitoring`
 #
 # - `host_id`
 # - `placement_group`
@@ -88,8 +85,14 @@ resource "aws_instance" "this" {
 
 
   ## Attributes
-  disable_api_stop        = var.stop_protection_enabled
-  disable_api_termination = var.termination_protection_enabled
+  instance_initiated_shutdown_behavior = try(lower(var.shutdown_behavior), null)
+  disable_api_stop                     = var.stop_protection_enabled
+  disable_api_termination              = var.termination_protection_enabled
+  monitoring                           = var.monitoring_enabled
+
+  maintenance_options {
+    auto_recovery = try(var.auto_recovery_enabled ? "default" : "disabled", null)
+  }
 
   timeouts {
     create = var.timeouts.create
@@ -133,8 +136,14 @@ resource "aws_spot_instance_request" "this" {
 
 
   ## Attributes
-  disable_api_stop        = var.stop_protection_enabled
-  disable_api_termination = var.termination_protection_enabled
+  instance_initiated_shutdown_behavior = try(lower(var.shutdown_behavior), null)
+  disable_api_stop                     = var.stop_protection_enabled
+  disable_api_termination              = var.termination_protection_enabled
+  monitoring                           = var.monitoring_enabled
+
+  maintenance_options {
+    auto_recovery = try(var.auto_recovery_enabled ? "default" : "disabled", null)
+  }
 
   timeouts {
     create = var.timeouts.create

@@ -66,8 +66,11 @@ output "cpu_credit_specification" {
 output "attributes" {
   description = "A set of attributes that applied to the instance."
   value = {
+    shutdown_behavior              = try(upper(aws_instance.this[0].instance_initiated_shutdown_behavior), upper(aws_spot_instance_request.this[0].instance_initiated_shutdown_behavior))
     stop_protection_enabled        = try(aws_instance.this[0].disable_api_stop, aws_spot_instance_request.this[0].disable_api_stop)
     termination_protection_enabled = try(aws_instance.this[0].disable_api_termination, aws_spot_instance_request.this[0].disable_api_termination)
+    auto_recovery_enabled          = try(upper(aws_instance.this[0].maintenance_options[0].auto_recovery), upper(aws_spot_instance_request.this[0].maintenance_options[0].auto_recovery)) == "DEFAULT"
+    monitoring_enabled             = try(aws_instance.this[0].monitoring, aws_spot_instance_request.this[0].monitoring)
   }
 }
 
@@ -76,7 +79,7 @@ output "test" {
   value = {
     for k, v in try(aws_instance.this[0], aws_spot_instance_request.this[0]) :
     k => v
-    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification"], k)
+    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options"], k)
   }
 
 }
