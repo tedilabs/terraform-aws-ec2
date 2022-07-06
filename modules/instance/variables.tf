@@ -60,6 +60,30 @@ variable "cpu_credit_specification" {
   default     = null
 }
 
+variable "host_id" {
+  description = "(Optional) The ID of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host."
+  type        = string
+  default     = null
+}
+
+variable "tenancy" {
+  description = "(Optional) The tenancy of the instance (if the instance is running in a VPC). Valid values are `DEFAULT`, `DEDICATED` or `HOST`."
+  type        = string
+  default     = null
+}
+
+variable "placement_group" {
+  description = "(Optional) The name of the placement group to start the instance in, if applicable. Choose an instance type that supports enhanced networking to use `CLUSTER` placement group. You cannot launch Dedicated Hosts in placement groups."
+  type        = string
+  default     = null
+}
+
+variable "placement_group_partition" {
+  description = "(Optional) The index of the partition the instance is in. Valid only if the `placement_group` resource's strategy is set to `PARTITION`."
+  type        = number
+  default     = null
+}
+
 variable "shutdown_behavior" {
   description = "(Optional) The instance behavior when an OS-level shutdown is performed. Instances can be either terminated or stopped. Valid values are `STOP` or `TERMINATE`. Amazon defaults this to `STOP` for EBS-backed instances and `TERMINATE` for instance-store instances. Cannot be set on instance-store instances."
   type        = string

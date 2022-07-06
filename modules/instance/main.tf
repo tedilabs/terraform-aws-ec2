@@ -50,11 +50,6 @@ locals {
 # - `launch_template`
 # - `metadata_options`
 #
-# - `host_id`
-# - `placement_group`
-# - `placement_partition_number`
-# - `tenancy`
-#
 # - `user_data`
 # - `user_data_base64`
 # - `user_data_replace_on_change`
@@ -82,6 +77,13 @@ resource "aws_instance" "this" {
   availability_zone = var.availability_zone
   subnet_id         = var.subnet_id
   # vpc_security_group_ids = [aws_security_group.web.id]
+
+
+  ## Host & Placement Group
+  host_id                    = var.host_id
+  tenancy                    = try(lower(var.tenancy), null)
+  placement_group            = var.placement_group
+  placement_partition_number = var.placement_group_partition
 
 
   ## Attributes
@@ -133,6 +135,13 @@ resource "aws_spot_instance_request" "this" {
   availability_zone = var.availability_zone
   subnet_id         = var.subnet_id
   # vpc_security_group_ids = [aws_security_group.web.id]
+
+
+  ## Host & Placement Group
+  host_id                    = var.host_id
+  tenancy                    = try(lower(var.tenancy), null)
+  placement_group            = var.placement_group
+  placement_partition_number = var.placement_group_partition
 
 
   ## Attributes

@@ -60,7 +60,26 @@ output "cpu_options" {
 
 output "cpu_credit_specification" {
   description = "The CPU credit specification for the instance."
-  value       = try(upper(aws_instance.this[0].credit_specification[0].cpu_credits), upper(aws_spot_instance_request.this[0].credit_specification[0].cpu_credits))
+  value       = try(upper(aws_instance.this[0].credit_specification[0].cpu_credits), upper(aws_spot_instance_request.this[0].credit_specification[0].cpu_credits), null)
+}
+
+output "host" {
+  description = "The configuration of host and placement group for the instance."
+  value = {
+    id      = try(aws_instance.this[0].host_id, aws_spot_instance_request.this[0].host_id)
+    tenancy = try(upper(aws_instance.this[0].tenancy), upper(aws_spot_instance_request.this[0].tenancy))
+    placement_group = try(
+      {
+        name      = aws_instance.this[0].placement_group
+        partition = aws_instance.this[0].placement_partition_number
+      },
+      {
+        name      = aws_spot_instance_request.this[0].placement_group
+        partition = aws_spot_instance_request.this[0].placement_partition_number
+      },
+      null
+    )
+  }
 }
 
 output "attributes" {
@@ -79,7 +98,7 @@ output "test" {
   value = {
     for k, v in try(aws_instance.this[0], aws_spot_instance_request.this[0]) :
     k => v
-    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options"], k)
+    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy"], k)
   }
 
 }
