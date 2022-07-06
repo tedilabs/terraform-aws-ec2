@@ -4,7 +4,12 @@ variable "name" {
 }
 
 variable "strategy" {
-  description = "(Required) The placement strategy of the placement group."
+  description = <<EOF
+  (Required) The placement strategy of the placement group. Valid values are `CLUSTER`, `PARTITION` or `SPREAD`.
+    `CLUSTER` - packs instances close together inside an Availability Zone. This strategy enables workloads to achieve the low-latency network performance necessary for tightly-coupled node-to-node communication that is typical of HPC applications.
+    `PARTITION` - spreads your instances across logical partitions such that groups of instances in one partition do not share the underlying hardware with groups of instances in different partitions. This strategy is typically used by large distributed and replicated workloads, such as Hadoop, Cassandra, and Kafka.
+    `SPREAD` - strictly places a small group of instances across distinct underlying hardware to reduce correlated failures.
+  EOF
   type        = string
   nullable    = false
 
