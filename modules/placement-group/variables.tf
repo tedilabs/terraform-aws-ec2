@@ -26,6 +26,18 @@ variable "partition_size" {
   nullable    = false
 }
 
+variable "spread_level" {
+  description = "(Optional) The spread level to determine how the placement group spread instances. Can only be specified when the `strategy` is set to `SPREAD`. Valid values are `HOST` and `RACK`. `HOST` can only be used for Outpost placement groups."
+  type        = string
+  default     = "RACK"
+  nullable    = false
+
+  validation {
+    condition     = contains(["HOST", "RACK"], var.spread_level)
+    error_message = "Valid values are `HOST`, or `RACK`."
+  }
+}
+
 variable "tags" {
   description = "(Optional) A map of tags to add to all resources."
   type        = map(string)

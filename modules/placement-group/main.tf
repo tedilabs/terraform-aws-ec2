@@ -34,6 +34,10 @@ resource "aws_placement_group" "this" {
     ? var.partition_size
     : null
   )
+  spread_level = (var.strategy == "SPREAD"
+    ? lower(var.spread_level)
+    : null
+  )
 
   tags = merge(
     {
