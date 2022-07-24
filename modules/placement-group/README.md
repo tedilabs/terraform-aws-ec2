@@ -12,13 +12,13 @@ This module creates following resources.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.2 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.20 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.22 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.14.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.23.0 |
 
 ## Modules
 
@@ -42,6 +42,7 @@ No modules.
 | <a name="input_resource_group_description"></a> [resource\_group\_description](#input\_resource\_group\_description) | (Optional) The description of Resource Group. | `string` | `"Managed by Terraform."` | no |
 | <a name="input_resource_group_enabled"></a> [resource\_group\_enabled](#input\_resource\_group\_enabled) | (Optional) Whether to create Resource Group to find and group AWS resources which are created by this module. | `bool` | `true` | no |
 | <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name) | (Optional) The name of Resource Group. A Resource Group name can have a maximum of 127 characters, including letters, numbers, hyphens, dots, and underscores. The name cannot start with `AWS` or `aws`. | `string` | `""` | no |
+| <a name="input_spread_level"></a> [spread\_level](#input\_spread\_level) | (Optional) The spread level to determine how the placement group spread instances. Can only be specified when the `strategy` is set to `SPREAD`. Valid values are `HOST` and `RACK`. `HOST` can only be used for Outpost placement groups. | `string` | `"RACK"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | (Optional) A map of tags to add to all resources. | `map(string)` | `{}` | no |
 
 ## Outputs
@@ -52,5 +53,6 @@ No modules.
 | <a name="output_id"></a> [id](#output\_id) | The ID of the placement group. |
 | <a name="output_name"></a> [name](#output\_name) | The name of the placement group. |
 | <a name="output_partition_size"></a> [partition\_size](#output\_partition\_size) | The number of partitions in the placement group. Only configured when the `strategy` is `PARTITION`. |
+| <a name="output_spread_level"></a> [spread\_level](#output\_spread\_level) | The spread level to determine how the placement group spread instance. Only configured when the `strategy` is `SPREAD`. |
 | <a name="output_strategy"></a> [strategy](#output\_strategy) | The placement strategy. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

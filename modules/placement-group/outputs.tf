@@ -22,3 +22,8 @@ output "partition_size" {
   description = "The number of partitions in the placement group. Only configured when the `strategy` is `PARTITION`."
   value       = aws_placement_group.this.partition_count
 }
+
+output "spread_level" {
+  description = "The spread level to determine how the placement group spread instance. Only configured when the `strategy` is `SPREAD`."
+  value       = upper(aws_placement_group.this.spread_level)
+}
