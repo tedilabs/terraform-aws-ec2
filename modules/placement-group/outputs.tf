@@ -25,5 +25,5 @@ output "partition_size" {
 
 output "spread_level" {
   description = "The spread level to determine how the placement group spread instance. Only configured when the `strategy` is `SPREAD`."
-  value       = upper(aws_placement_group.this.spread_level)
+  value       = try(upper(aws_placement_group.this.spread_level), null)
 }
