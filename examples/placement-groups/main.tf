@@ -38,8 +38,9 @@ module "spread" {
   # source  = "tedilabs/ec2/aws//modules/placement-group"
   # version = "~> 0.1.0"
 
-  name     = "spread"
-  strategy = "SPREAD"
+  name         = "spread"
+  strategy     = "SPREAD"
+  spread_level = "RACK"
 
   tags = {
     "project" = "terraform-aws-ec2-examples"
