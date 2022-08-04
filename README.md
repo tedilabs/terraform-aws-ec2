@@ -7,6 +7,18 @@
 Terraform module which creates ec2 related resources on AWS.
 
 
+## Target AWS Services
+
+Terraform Modules from [this package](https://github.com/tedilabs/terraform-aws-ec2) were written to manage the following AWS Services with Terraform.
+
+- **AWS EC2 (Elastic Compute Cloud)**
+  - Instance
+  - Spot Requests
+  - Placement Group
+  - SSH Key Pair
+  - Auto Scaling Group (comming sooon!)
+
+
 ## Self Promotion
 
 Like this project? Follow the repository on [GitHub](https://github.com/tedilabs/terraform-aws-ec2). And if you're feeling especially charitable, follow **[posquit0](https://github.com/posquit0)** on GitHub.
