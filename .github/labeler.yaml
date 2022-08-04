@@ -5,3 +5,5 @@
 - modules/instance-group/**/*
 ":floppy_disk: placement-group":
 - modules/placement-group/**/*
+":floppy_disk: ssh-key":
+- modules/ssh-key/**/*

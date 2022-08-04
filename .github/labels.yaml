@@ -49,3 +49,6 @@
 - color: "fbca04"
   description: "This issue or pull request is related to placement-group module."
   name: ":floppy_disk: placement-group"
+- color: "fbca04"
+  description: "This issue or pull request is related to ssh-key module."
+  name: ":floppy_disk: ssh-key"
