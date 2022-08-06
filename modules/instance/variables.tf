@@ -1,31 +1,32 @@
 variable "name" {
   description = "(Required) The name of the instance."
   type        = string
+  nullable    = false
 }
 
-variable "instance_ami" {
+variable "type" {
+  description = "(Optional) The instance type to use for the instance. Updates to this field will trigger a stop/start of the EC2 instance."
+  type        = string
+  default     = null
+}
+
+variable "ami" {
   description = "(Optional) The AMI to run on the instance."
   type        = string
   default     = null
 }
 
-variable "instance_type" {
-  description = "(Optional) The type of the instance."
-  type        = string
-  default     = null
-}
-
-variable "instance_ssh_key" {
+variable "ssh_key" {
   description = "(Optional) The name of the SSH Key that should be used to access the instance."
   type        = string
   default     = null
 }
 
-# variable "vpc_id" {
-#   description = "(Required) The ID of the VPC which the firewall belongs to."
-#   type        = string
-# }
-#
+variable "instance_profile" {
+  description = "(Optional) The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile. Ensure your credentials have the correct permission to assign the instance profile according to the EC2 documentation, notably `iam:PassRole`."
+  type        = string
+  default     = null
+}
 
 variable "availability_zone" {
   description = "(Optional) AZ (Availability Zone) to create the instance in."
@@ -36,6 +37,12 @@ variable "availability_zone" {
 variable "subnet_id" {
   description = "(Optional) The ID of subnet in which to launch the instance."
   type        = string
+  default     = null
+}
+
+variable "source_dest_check_enabled" {
+  description = "(Optional) Whether the traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. Defaults to `true`."
+  type        = bool
   default     = null
 }
 
@@ -138,12 +145,14 @@ variable "tags" {
   description = "(Optional) A map of tags to add to all resources."
   type        = map(string)
   default     = {}
+  nullable    = false
 }
 
 variable "module_tags_enabled" {
   description = "(Optional) Whether to create AWS Resource Tags for the module informations."
   type        = bool
   default     = true
+  nullable    = false
 }
 
 
@@ -155,16 +164,19 @@ variable "resource_group_enabled" {
   description = "(Optional) Whether to create Resource Group to find and group AWS resources which are created by this module."
   type        = bool
   default     = true
+  nullable    = false
 }
 
 variable "resource_group_name" {
   description = "(Optional) The name of Resource Group. A Resource Group name can have a maximum of 127 characters, including letters, numbers, hyphens, dots, and underscores. The name cannot start with `AWS` or `aws`."
   type        = string
   default     = ""
+  nullable    = false
 }
 
 variable "resource_group_description" {
   description = "(Optional) The description of Resource Group."
   type        = string
   default     = "Managed by Terraform."
+  nullable    = false
 }

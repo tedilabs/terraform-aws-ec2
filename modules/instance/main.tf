@@ -15,7 +15,7 @@ locals {
 }
 
 locals {
-  is_t_type = replace(var.instance_type, "/^t(2|3|3a){1}\\..*$/", "1") == "1" ? true : false
+  is_t_type = replace(var.type, "/^t(2|3|3a){1}\\..*$/", "1") == "1" ? true : false
 }
 
 
@@ -26,9 +26,9 @@ locals {
 # INFO: Not supported attributes
 # - `security_groups`
 #
-# - `iam_instance_profile`
-#
-# - `source_dest_check`
+# - `user_data`
+# - `user_data_base64`
+# - `user_data_replace_on_change`
 #
 # - `ipv6_address_count`
 # - `ipv6_addresses`
@@ -50,18 +50,24 @@ locals {
 # - `launch_template`
 # - `metadata_options`
 #
-# - `user_data`
-# - `user_data_base64`
-# - `user_data_replace_on_change`
-#
 # - `volume_tags`
 resource "aws_instance" "this" {
   count = var.spot_enabled ? 0 : 1
 
-  ami           = var.instance_ami
-  instance_type = var.instance_type
-  key_name      = var.instance_ssh_key
+  instance_type        = var.type
+  ami                  = var.ami
+  key_name             = var.ssh_key
+  iam_instance_profile = var.instance_profile
 
+
+  ## Network Configuration
+  availability_zone = var.availability_zone
+  subnet_id         = var.subnet_id
+  # vpc_security_group_ids = [aws_security_group.web.id]
+  source_dest_check = var.source_dest_check_enabled
+
+
+  ## CPU
   cpu_core_count       = try(var.cpu_options.core_count, null)
   cpu_threads_per_core = try(var.cpu_options.threads_per_core, null)
 
@@ -71,12 +77,6 @@ resource "aws_instance" "this" {
       : null
     )
   }
-
-
-  ## Network Configuration
-  availability_zone = var.availability_zone
-  subnet_id         = var.subnet_id
-  # vpc_security_group_ids = [aws_security_group.web.id]
 
 
   ## Host & Placement Group
@@ -114,9 +114,17 @@ resource "aws_instance" "this" {
 resource "aws_spot_instance_request" "this" {
   count = var.spot_enabled ? 1 : 0
 
-  ami           = var.instance_ami
-  instance_type = var.instance_type
-  key_name      = var.instance_ssh_key
+  instance_type        = var.type
+  ami                  = var.ami
+  key_name             = var.ssh_key
+  iam_instance_profile = var.instance_profile
+
+
+  ## Network Configuration
+  availability_zone = var.availability_zone
+  subnet_id         = var.subnet_id
+  # vpc_security_group_ids = [aws_security_group.web.id]
+  source_dest_check = var.source_dest_check_enabled
 
 
   ## CPU
@@ -129,12 +137,6 @@ resource "aws_spot_instance_request" "this" {
       : null
     )
   }
-
-
-  ## Network Configuration
-  availability_zone = var.availability_zone
-  subnet_id         = var.subnet_id
-  # vpc_security_group_ids = [aws_security_group.web.id]
 
 
   ## Host & Placement Group
