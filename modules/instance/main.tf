@@ -33,24 +33,17 @@ locals {
 # - `ipv6_address_count`
 # - `ipv6_addresses`
 # - `private_dns_name_options`
-# - `private_ip`
-# - `secondary_private_ips`
 # - `network_interface`
-# - `associate_public_ip_address`
 #
 # - `ephemeral_block_device`
 # - `root_block_device`
 # - `ebs_block_device`
-# - `ebs_block_optimized`
 #
 # - `capacity_reservation_specification`
-# - `enclave_options`
 # - `get_password_data`
-# - `hibernation`
 # - `launch_template`
 # - `metadata_options`
-#
-# - `volume_tags`
+# TODO: hibernation enabled with root device encryption
 resource "aws_instance" "this" {
   count = var.spot_enabled ? 0 : 1
 
@@ -61,10 +54,14 @@ resource "aws_instance" "this" {
 
 
   ## Network Configuration
-  availability_zone = var.availability_zone
-  subnet_id         = var.subnet_id
-  # vpc_security_group_ids = [aws_security_group.web.id]
-  source_dest_check = var.source_dest_check_enabled
+  availability_zone      = var.availability_zone
+  subnet_id              = var.subnet_id
+  vpc_security_group_ids = var.security_groups
+  source_dest_check      = var.source_dest_check_enabled
+
+  associate_public_ip_address = var.auto_assign_public_ip_enabled
+  private_ip                  = var.private_ip
+  secondary_private_ips       = var.secondary_private_ips
 
 
   ## CPU
@@ -86,14 +83,23 @@ resource "aws_instance" "this" {
   placement_partition_number = var.placement_group_partition
 
 
+  ## Storage
+  ebs_optimized = var.ebs_optimized
+
+
   ## Attributes
   instance_initiated_shutdown_behavior = try(lower(var.shutdown_behavior), null)
+  hibernation                          = var.stop_hibernation_enabled
   disable_api_stop                     = var.stop_protection_enabled
   disable_api_termination              = var.termination_protection_enabled
   monitoring                           = var.monitoring_enabled
 
   maintenance_options {
     auto_recovery = try(var.auto_recovery_enabled ? "default" : "disabled", null)
+  }
+
+  enclave_options {
+    enabled = var.nitro_enclave_enabled
   }
 
   timeouts {
@@ -109,8 +115,17 @@ resource "aws_instance" "this" {
     local.module_tags,
     var.tags,
   )
+  volume_tags = merge(
+    {
+      "Name" = local.metadata.name
+    },
+    local.module_tags,
+    var.tags,
+  )
 }
 
+# INFO: Not supported attributes
+# - `security_groups`
 resource "aws_spot_instance_request" "this" {
   count = var.spot_enabled ? 1 : 0
 
@@ -121,10 +136,14 @@ resource "aws_spot_instance_request" "this" {
 
 
   ## Network Configuration
-  availability_zone = var.availability_zone
-  subnet_id         = var.subnet_id
-  # vpc_security_group_ids = [aws_security_group.web.id]
-  source_dest_check = var.source_dest_check_enabled
+  availability_zone      = var.availability_zone
+  subnet_id              = var.subnet_id
+  vpc_security_group_ids = var.security_groups
+  source_dest_check      = var.source_dest_check_enabled
+
+  associate_public_ip_address = var.auto_assign_public_ip_enabled
+  private_ip                  = var.private_ip
+  secondary_private_ips       = var.secondary_private_ips
 
 
   ## CPU
@@ -146,8 +165,13 @@ resource "aws_spot_instance_request" "this" {
   placement_partition_number = var.placement_group_partition
 
 
+  ## Storage
+  ebs_optimized = var.ebs_optimized
+
+
   ## Attributes
   instance_initiated_shutdown_behavior = try(lower(var.shutdown_behavior), null)
+  hibernation                          = var.stop_hibernation_enabled
   disable_api_stop                     = var.stop_protection_enabled
   disable_api_termination              = var.termination_protection_enabled
   monitoring                           = var.monitoring_enabled
@@ -156,12 +180,23 @@ resource "aws_spot_instance_request" "this" {
     auto_recovery = try(var.auto_recovery_enabled ? "default" : "disabled", null)
   }
 
+  enclave_options {
+    enabled = var.nitro_enclave_enabled
+  }
+
   timeouts {
     create = var.timeouts.create
     delete = var.timeouts.delete
   }
 
   tags = merge(
+    {
+      "Name" = local.metadata.name
+    },
+    local.module_tags,
+    var.tags,
+  )
+  volume_tags = merge(
     {
       "Name" = local.metadata.name
     },

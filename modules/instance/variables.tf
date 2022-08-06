@@ -40,9 +40,33 @@ variable "subnet_id" {
   default     = null
 }
 
+variable "security_groups" {
+  description = "(Optional) A set of security group IDs to assign to the instance."
+  type        = set(string)
+  default     = []
+}
+
 variable "source_dest_check_enabled" {
   description = "(Optional) Whether the traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. Defaults to `true`."
   type        = bool
+  default     = null
+}
+
+variable "auto_assign_public_ip_enabled" {
+  description = "(Optional) Whether a public IP address is automatically assigned to the primary network interface of the instance in a VPC."
+  type        = bool
+  default     = null
+}
+
+variable "private_ip" {
+  description = "(Optional) The primary private IPv4 address to associate with the instance."
+  type        = string
+  default     = null
+}
+
+variable "secondary_private_ips" {
+  description = "(Optional) A list of secondary private IPv4 addresses to assign to the instance's primary network interface (eth0). Can only be assigned to the primary network interface (eth0) attached at instance creation, not a pre-existing network interface i.e., referenced in a network_interface block."
+  type        = set(string)
   default     = null
 }
 
@@ -91,9 +115,21 @@ variable "placement_group_partition" {
   default     = null
 }
 
+variable "ebs_optimized" {
+  description = "(Optional) Whether to enable additional, dedicated throughput between Amazon EC2 and Amazon EBS. The launched EC2 instance will be EBS-optimized if true. Note that if this is not set on an instance type that is optimized by default then this will show as disabled but if the instance type is optimized by default then there is no need to set this and there is no effect to disabling it."
+  type        = bool
+  default     = null
+}
+
 variable "shutdown_behavior" {
   description = "(Optional) The instance behavior when an OS-level shutdown is performed. Instances can be either terminated or stopped. Valid values are `STOP` or `TERMINATE`. Amazon defaults this to `STOP` for EBS-backed instances and `TERMINATE` for instance-store instances. Cannot be set on instance-store instances."
   type        = string
+  default     = null
+}
+
+variable "stop_hibernation_enabled" {
+  description = "(Optional) Indicates whether to support hibernation stop for the instance. Hibernation stops your instance and saves the contents of the instance’s RAM to the root volume. You cannot enable hibernation after launch."
+  type        = bool
   default     = null
 }
 
@@ -113,6 +149,12 @@ variable "termination_protection_enabled" {
 
 variable "auto_recovery_enabled" {
   description = "(Optional) Whether to enable auto-recovery for the instance. Instance auto-recovery recovers your instance if system status checks fail. By default, shared tenancy without local storage and GPUs are set to auto-recover."
+  type        = bool
+  default     = null
+}
+
+variable "nitro_enclave_enabled" {
+  description = "(Optional) Whether to enable Nitro Enclaves on the instance. A Nitro Enclave is a trusted execution environment (TEE) in which you can securely process sensitive data. It extends the security and isolation characteristics of the AWS Nitro System and allows you to create isolated compute environments within Amazon EC2 instances. Defaults to `false`."
   type        = bool
   default     = null
 }
