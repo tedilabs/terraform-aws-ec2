@@ -42,7 +42,6 @@ locals {
 # - `capacity_reservation_specification`
 # - `get_password_data`
 # - `launch_template`
-# - `metadata_options`
 # TODO: hibernation enabled with root device encryption
 resource "aws_instance" "this" {
   count = var.spot_enabled ? 0 : 1
@@ -62,6 +61,16 @@ resource "aws_instance" "this" {
   associate_public_ip_address = var.auto_assign_public_ip_enabled
   private_ip                  = var.private_ip
   secondary_private_ips       = var.secondary_private_ips
+
+
+  ## Metadata
+  metadata_options {
+    http_endpoint               = try(var.metadata_http_enabled ? "enabled" : "disabled", null)
+    http_tokens                 = try(var.metadata_http_token_required ? "required" : "optional", null)
+    http_put_response_hop_limit = var.metadata_http_put_response_hop_limit
+
+    instance_metadata_tags = try(var.metadata_instance_tags_enabled ? "enabled" : "disabled", null)
+  }
 
 
   ## CPU
@@ -144,6 +153,16 @@ resource "aws_spot_instance_request" "this" {
   associate_public_ip_address = var.auto_assign_public_ip_enabled
   private_ip                  = var.private_ip
   secondary_private_ips       = var.secondary_private_ips
+
+
+  ## Metadata
+  metadata_options {
+    http_endpoint               = try(var.metadata_http_enabled ? "enabled" : "disabled", null)
+    http_tokens                 = try(var.metadata_http_token_required ? "required" : "optional", null)
+    http_put_response_hop_limit = var.metadata_http_put_response_hop_limit
+
+    instance_metadata_tags = try(var.metadata_instance_tags_enabled ? "enabled" : "disabled", null)
+  }
 
 
   ## CPU

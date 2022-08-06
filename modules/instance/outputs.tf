@@ -72,6 +72,22 @@ output "network" {
   }
 }
 
+output "metadata" {
+  description = <<EOF
+  The configuration for metadata of the instance.
+  EOF
+  value = {
+    http = {
+      enabled                = try(aws_instance.this[0].metadata_options[0].http_endpoint, aws_spot_instance_request.this[0].metadata_options[0].http_endpoint) == "enabled"
+      token_required         = try(aws_instance.this[0].metadata_options[0].http_tokens, aws_spot_instance_request.this[0].metadata_options[0].http_tokens) == "required"
+      put_response_hop_limit = try(aws_instance.this[0].metadata_options[0].http_put_response_hop_limit, aws_spot_instance_request.this[0].metadata_options[0].http_put_response_hop_limit)
+    }
+    instance_tags = {
+      enabled = try(aws_instance.this[0].metadata_options[0].instance_metadata_tags, aws_spot_instance_request.this[0].metadata_options[0].instance_metadata_tags) == "enabled"
+    }
+  }
+}
+
 output "cpu" {
   description = <<EOF
   The CPU configuration for the instance.
@@ -133,7 +149,7 @@ output "test" {
   value = {
     for k, v in try(aws_instance.this[0], aws_spot_instance_request.this[0]) :
     k => v
-    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options"], k)
+    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options"], k)
   }
 
 }

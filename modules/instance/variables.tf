@@ -70,6 +70,30 @@ variable "secondary_private_ips" {
   default     = null
 }
 
+variable "metadata_http_enabled" {
+  description = "(Optional) Whether the metadata service is available. You can turn off access to your instance metadata by disabling the HTTP endpoint of the instance metadata service. Defaults to `true`."
+  type        = bool
+  default     = null
+}
+
+variable "metadata_http_token_required" {
+  description = "(Optional) Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2 (IMDSv2). Defaults to `false`."
+  type        = bool
+  default     = null
+}
+
+variable "metadata_http_put_response_hop_limit" {
+  description = "(Optional) A desired HTTP PUT response hop limit for instance metadata requests. The larger the number, the further instance metadata requests can travel. Valid values are integer from `1` to `64`. Defaults to `1`."
+  type        = number
+  default     = null
+}
+
+variable "metadata_instance_tags_enabled" {
+  description = "(Optional) Whether to enable the access to instance tags from the instance metadata service. Defaults to `false`."
+  type        = bool
+  default     = null
+}
+
 # INFO: This option is only supported on creation of instance type that support CPU Options
 # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/instance-optimize-cpu.html#cpu-options-supported-instances-values
 variable "cpu_options" {
