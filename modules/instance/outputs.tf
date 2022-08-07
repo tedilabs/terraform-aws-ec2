@@ -69,6 +69,15 @@ output "network" {
     public_ip                     = try(aws_instance.this[0].public_ip, aws_spot_instance_request.this[0].private_ip)
     private_ip                    = try(aws_instance.this[0].private_ip, aws_spot_instance_request.this[0].private_ip)
     secondary_private_ips         = try(aws_instance.this[0].secondary_private_ips, aws_spot_instance_request.this[0].secondary_private_ips)
+    eip_associations = {
+      for id, association in aws_eip_association.this :
+      association.public_ip => {
+        id = id
+
+        network_interface = association.network_interface_id
+        private_ip        = association.private_ip_address
+      }
+    }
   }
 }
 

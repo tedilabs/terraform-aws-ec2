@@ -64,12 +64,17 @@ resource "aws_instance" "this" {
 
 
   ## Metadata
-  metadata_options {
-    http_endpoint               = try(var.metadata_http_enabled ? "enabled" : "disabled", null)
-    http_tokens                 = try(var.metadata_http_token_required ? "required" : "optional", null)
-    http_put_response_hop_limit = var.metadata_http_put_response_hop_limit
+  dynamic "metadata_options" {
+    for_each = var.metadata_options != null ? [var.metadata_options] : []
+    iterator = metadata
 
-    instance_metadata_tags = try(var.metadata_instance_tags_enabled ? "enabled" : "disabled", null)
+    content {
+      http_endpoint               = try(metadata.value.http_enabled, true) ? "enabled" : "disabled"
+      http_tokens                 = try(metadata.value.http_token_required, false) ? "required" : "optional"
+      http_put_response_hop_limit = try(metadata.value.http_put_response_hop_limit, 1)
+
+      instance_metadata_tags = try(metadata.value.instance_tags_enabled, false) ? "enabled" : "disabled"
+    }
   }
 
 
@@ -156,12 +161,17 @@ resource "aws_spot_instance_request" "this" {
 
 
   ## Metadata
-  metadata_options {
-    http_endpoint               = try(var.metadata_http_enabled ? "enabled" : "disabled", null)
-    http_tokens                 = try(var.metadata_http_token_required ? "required" : "optional", null)
-    http_put_response_hop_limit = var.metadata_http_put_response_hop_limit
+  dynamic "metadata_options" {
+    for_each = var.metadata_options != null ? [var.metadata_options] : []
+    iterator = metadata
 
-    instance_metadata_tags = try(var.metadata_instance_tags_enabled ? "enabled" : "disabled", null)
+    content {
+      http_endpoint               = try(metadata.value.http_enabled, true) ? "enabled" : "disabled"
+      http_tokens                 = try(metadata.value.http_token_required, false) ? "required" : "optional"
+      http_put_response_hop_limit = try(metadata.value.http_put_response_hop_limit, 1)
+
+      instance_metadata_tags = try(metadata.value.instance_tags_enabled, false) ? "enabled" : "disabled"
+    }
   }
 
 

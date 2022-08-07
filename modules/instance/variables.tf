@@ -70,27 +70,26 @@ variable "secondary_private_ips" {
   default     = null
 }
 
-variable "metadata_http_enabled" {
-  description = "(Optional) Whether the metadata service is available. You can turn off access to your instance metadata by disabling the HTTP endpoint of the instance metadata service. Defaults to `true`."
-  type        = bool
-  default     = null
+variable "eip_associations" {
+  description = <<EOF
+  (Optional) A list of configurations to associate Elastic IPs to the network interfaces of the instance. Each `eip_associations` block as defined below.
+    (Required) `eip` - The allocation ID of Elastic IP to associate.
+    (Optional) `private_ip` - The primary or secondary private IP address to associate with the Elastic IP address. If no private IP address is specified, the Elastic IP address is associated with the primary private IP address.
+  EOF
+  type        = list(map(string))
+  default     = []
+  nullable    = false
 }
 
-variable "metadata_http_token_required" {
-  description = "(Optional) Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2 (IMDSv2). Defaults to `false`."
-  type        = bool
-  default     = null
-}
-
-variable "metadata_http_put_response_hop_limit" {
-  description = "(Optional) A desired HTTP PUT response hop limit for instance metadata requests. The larger the number, the further instance metadata requests can travel. Valid values are integer from `1` to `64`. Defaults to `1`."
-  type        = number
-  default     = null
-}
-
-variable "metadata_instance_tags_enabled" {
-  description = "(Optional) Whether to enable the access to instance tags from the instance metadata service. Defaults to `false`."
-  type        = bool
+variable "metadata_options" {
+  description = <<EOF
+  (Optional) The configuration for metadata of the instance. `metadata_options` block as defined below.
+    (Optional) `http_enabled` - Whether the metadata service is available. You can turn off access to your instance metadata by disabling the HTTP endpoint of the instance metadata service. Defaults to `true`.
+    (Optional) `http_token_required` - Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2 (IMDSv2). Defaults to `false`.
+    (Optional) `http_put_response_hop_limit` - A desired HTTP PUT response hop limit for instance metadata requests. The larger the number, the further instance metadata requests can travel. Valid values are integer from `1` to `64`. Defaults to `1`.
+    (Optional) `instance_tags_enabled` - Whether to enable the access to instance tags from the instance metadata service. Defaults to `false`.
+  EOF
+  type        = any
   default     = null
 }
 
