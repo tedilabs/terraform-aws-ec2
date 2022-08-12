@@ -188,6 +188,17 @@ variable "monitoring_enabled" {
   default     = null
 }
 
+variable "launch_template" {
+  description = <<EOF
+  (Optional) The configuration for launch template of the instance. Launch Template parameters will be used only once during instance creation. If you want to update existing instance you need to change parameters directly. Updating Launch Template specification will force a new instance. Any other instance parameters that you specify will override the same parameters in the launch template. `launch_template` block as defined below.
+    (Optional) `id` - The ID of the launch template. Conflicts with `name`.
+    (Optional) `name` - The name of the launch template. Conflicts with `id`.
+    (Optional) `version` - The version of launch template. Valid value is a specific version number, `$Latest` or `$Default`. Defaults to `$Default`.
+  EOF
+  type        = map(string)
+  default     = null
+}
+
 variable "spot_enabled" {
   description = "(Optional) Whether to create the instance as a spot instance."
   type        = bool
