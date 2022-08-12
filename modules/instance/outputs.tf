@@ -153,6 +153,21 @@ output "attributes" {
   }
 }
 
+output "launch_template" {
+  description = <<EOF
+  The configuration for launch template of the instance.
+  EOF
+  value = (var.launch_template != null
+    ? {
+      id   = try(aws_instance.this[0].launch_template[0].id, aws_spot_instance_request.this[0].launch_template[0].id)
+      name = try(aws_instance.this[0].launch_template[0].name, aws_spot_instance_request.this[0].launch_template[0].name)
+
+      version = try(aws_instance.this[0].launch_template[0].version, aws_spot_instance_request.this[0].launch_template[0].version)
+    }
+    : null
+  )
+}
+
 output "ami_snapshots" {
   description = "The configuration of AMI snapshots for the instance."
   value = {
@@ -166,7 +181,7 @@ output "test" {
   value = {
     for k, v in try(aws_instance.this[0], aws_spot_instance_request.this[0]) :
     k => v
-    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options"], k)
+    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template"], k)
   }
 
 }

@@ -41,7 +41,6 @@ locals {
 #
 # - `capacity_reservation_specification`
 # - `get_password_data`
-# - `launch_template`
 # TODO: hibernation enabled with root device encryption
 resource "aws_instance" "this" {
   count = var.spot_enabled ? 0 : 1
@@ -83,7 +82,7 @@ resource "aws_instance" "this" {
   cpu_threads_per_core = try(var.cpu_options.threads_per_core, null)
 
   credit_specification {
-    cpu_credits = (local.is_t_type
+    cpu_credits = (local.is_t_type && (var.cpu_credit_specification != null)
       ? lower(var.cpu_credit_specification)
       : null
     )
@@ -114,6 +113,18 @@ resource "aws_instance" "this" {
 
   enclave_options {
     enabled = var.nitro_enclave_enabled
+  }
+
+  dynamic "launch_template" {
+    for_each = var.launch_template != null ? [var.launch_template] : []
+    iterator = template
+
+    content {
+      id   = try(template.value.id, null)
+      name = try(template.value.name, null)
+
+      version = try(template.value.version, "$Default")
+    }
   }
 
   timeouts {
@@ -180,7 +191,7 @@ resource "aws_spot_instance_request" "this" {
   cpu_threads_per_core = try(var.cpu_options.threads_per_core, null)
 
   credit_specification {
-    cpu_credits = (local.is_t_type
+    cpu_credits = (local.is_t_type && (var.cpu_credit_specification != null)
       ? lower(var.cpu_credit_specification)
       : null
     )
@@ -213,6 +224,18 @@ resource "aws_spot_instance_request" "this" {
     enabled = var.nitro_enclave_enabled
   }
 
+  dynamic "launch_template" {
+    for_each = var.launch_template != null ? [var.launch_template] : []
+    iterator = template
+
+    content {
+      id   = try(template.value.id, null)
+      name = try(template.value.name, null)
+
+      version = try(template.value.version, "$Default")
+    }
+  }
+
   timeouts {
     create = var.timeouts.create
     delete = var.timeouts.delete
@@ -239,10 +262,12 @@ resource "aws_spot_instance_request" "this" {
 # AMI Snapshots from EC2 Instance
 ###################################################
 
+# TODO: Support all properties
 resource "aws_ami_from_instance" "this" {
   for_each = var.ami_snapshots
 
   name               = each.key
+  description        = "Managed by Terraform."
   source_instance_id = try(aws_instance.this[0].id, aws_spot_instance_request.this[0].id)
 
   snapshot_without_reboot = var.ami_snapshots_without_reboot_enabled
