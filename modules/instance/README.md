@@ -5,6 +5,7 @@ This module creates following resources.
 - `aws_instance` (optional)
 - `aws_spot_instance_request` (optional)
 - `aws_eip_association` (optional)
+- `aws_ami_from_instance` (optional)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
@@ -28,6 +29,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [aws_ami_from_instance.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ami_from_instance) | resource |
 | [aws_eip_association.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip_association) | resource |
 | [aws_instance.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
 | [aws_resourcegroups_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/resourcegroups_group) | resource |
@@ -39,6 +41,8 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the instance. | `string` | n/a | yes |
 | <a name="input_ami"></a> [ami](#input\_ami) | (Optional) The AMI to run on the instance. | `string` | `null` | no |
+| <a name="input_ami_snapshots"></a> [ami\_snapshots](#input\_ami\_snapshots) | (Optional) A list of names for AMI snapshots of the instance. Each name should be a region-unique name for the AMI. | `set(string)` | `[]` | no |
+| <a name="input_ami_snapshots_without_reboot_enabled"></a> [ami\_snapshots\_without\_reboot\_enabled](#input\_ami\_snapshots\_without\_reboot\_enabled) | (Optional) Whether to overrides the behavior of stopping the instance before snapshotting. This is risky since it may cause a snapshot of an inconsistent filesystem state, but can be used to avoid downtime if the user otherwise guarantees that no filesystem writes will be underway at the time of snapshot. | `bool` | `true` | no |
 | <a name="input_auto_assign_public_ip_enabled"></a> [auto\_assign\_public\_ip\_enabled](#input\_auto\_assign\_public\_ip\_enabled) | (Optional) Whether a public IP address is automatically assigned to the primary network interface of the instance in a VPC. | `bool` | `null` | no |
 | <a name="input_auto_recovery_enabled"></a> [auto\_recovery\_enabled](#input\_auto\_recovery\_enabled) | (Optional) Whether to enable auto-recovery for the instance. Instance auto-recovery recovers your instance if system status checks fail. By default, shared tenancy without local storage and GPUs are set to auto-recover. | `bool` | `null` | no |
 | <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | (Optional) AZ (Availability Zone) to create the instance in. | `string` | `null` | no |
@@ -78,6 +82,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_ami"></a> [ami](#output\_ami) | The AMI to run on the instance. |
+| <a name="output_ami_snapshots"></a> [ami\_snapshots](#output\_ami\_snapshots) | The configuration of AMI snapshots for the instance. |
 | <a name="output_arn"></a> [arn](#output\_arn) | The ARN of the instance. |
 | <a name="output_attributes"></a> [attributes](#output\_attributes) | A set of attributes that applied to the instance. |
 | <a name="output_cpu"></a> [cpu](#output\_cpu) | The CPU configuration for the instance.<br>    `options` - The CPU options for the instance.<br>    `credit_specification` - The CPU credit specification for the instance. |

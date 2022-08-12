@@ -233,3 +233,25 @@ resource "aws_spot_instance_request" "this" {
     var.tags,
   )
 }
+
+
+###################################################
+# AMI Snapshots from EC2 Instance
+###################################################
+
+resource "aws_ami_from_instance" "this" {
+  for_each = var.ami_snapshots
+
+  name               = each.key
+  source_instance_id = try(aws_instance.this[0].id, aws_spot_instance_request.this[0].id)
+
+  snapshot_without_reboot = var.ami_snapshots_without_reboot_enabled
+
+  tags = merge(
+    {
+      "Name" = each.key
+    },
+    local.module_tags,
+    var.tags,
+  )
+}

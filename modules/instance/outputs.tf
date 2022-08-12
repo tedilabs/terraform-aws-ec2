@@ -153,6 +153,14 @@ output "attributes" {
   }
 }
 
+output "ami_snapshots" {
+  description = "The configuration of AMI snapshots for the instance."
+  value = {
+    snapshots              = keys(aws_ami_from_instance.this)
+    without_reboot_enabled = var.ami_snapshots_without_reboot_enabled
+  }
+}
+
 output "test" {
   description = "The configuration of rule groups associated with the firewall."
   value = {

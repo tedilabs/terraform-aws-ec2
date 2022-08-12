@@ -195,6 +195,20 @@ variable "spot_enabled" {
   nullable    = false
 }
 
+variable "ami_snapshots" {
+  description = "(Optional) A list of names for AMI snapshots of the instance. Each name should be a region-unique name for the AMI."
+  type        = set(string)
+  default     = []
+  nullable    = false
+}
+
+variable "ami_snapshots_without_reboot_enabled" {
+  description = "(Optional) Whether to overrides the behavior of stopping the instance before snapshotting. This is risky since it may cause a snapshot of an inconsistent filesystem state, but can be used to avoid downtime if the user otherwise guarantees that no filesystem writes will be underway at the time of snapshot."
+  type        = bool
+  default     = true
+  nullable    = false
+}
+
 variable "timeouts" {
   description = "(Optional) How long to wait for the instance to be created/updated/deleted."
   type        = map(string)
