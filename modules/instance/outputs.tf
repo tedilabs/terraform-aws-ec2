@@ -55,9 +55,14 @@ output "network" {
     `availability_zone` - The Availability Zone of the instance.
     `subnet_id` - The ID of subnet of the launched instance.
     `source_dest_check_enabled` - Whether the traffic is routed to the instance when the destination address does not match the instance.
+
     `public_ip` - The public IP address assigned to the instance, if applicable. NOTE: If you are using an aws_eip with your instance, you should refer to the EIP's address directly and not use `public_ip` as this field will change after the EIP is attached.
     `private_ip` - The private IP address assigned to the instance.
     `secondary_private_ips` - A list of secondary private IPv4 addresses assigned to the instance's primary network interface.
+
+    `hostname_type` - The type of hostname for the EC2 instances.
+    `dns_resource_name_ipv4_enabled` - Whether to resolve the IPv4 address of the EC2 instance for requests to your resource-name based domain.
+    `dns_resource_name_ipv6_enabled` - Whether to resolve the IPv6 address of the EC2 instance for requests to your resource-name based domain.
   EOF
   value = {
     availability_zone         = try(aws_instance.this[0].availability_zone, aws_spot_instance_request.this[0].availability_zone)
@@ -78,6 +83,13 @@ output "network" {
         private_ip        = association.private_ip_address
       }
     }
+
+    hostname_type = {
+      for k, v in local.hostname_type :
+      v => k
+    }[try(aws_instance.this[0].private_dns_name_options[0].hostname_type, aws_spot_instance_request.this[0].private_dns_name_options[0].hostname_type)]
+    dns_resource_name_ipv4_enabled = try(aws_instance.this[0].private_dns_name_options[0].enable_resource_name_dns_a_record, aws_spot_instance_request.this[0].private_dns_name_options[0].enable_resource_name_dns_a_record)
+    dns_resource_name_ipv6_enabled = try(aws_instance.this[0].private_dns_name_options[0].enable_resource_name_dns_aaaa_record, aws_spot_instance_request.this[0].private_dns_name_options[0].enable_resource_name_dns_aaaa_record)
   }
 }
 
@@ -176,12 +188,11 @@ output "ami_snapshots" {
   }
 }
 
-output "test" {
+output "zzz" {
   description = "The configuration of rule groups associated with the firewall."
   value = {
     for k, v in try(aws_instance.this[0], aws_spot_instance_request.this[0]) :
     k => v
-    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template"], k)
+    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template", "private_dns_name_options"], k)
   }
-
 }
