@@ -81,6 +81,24 @@ variable "eip_associations" {
   nullable    = false
 }
 
+variable "hostname_type" {
+  description = "(Optional) The type of hostname for the EC2 instances. For IPv4 only subnets, an instance DNS name must be based on the instance IPv4 address. For IPv6 native subnets, an instance DNS name must be based on the instance ID. For dual-stack subnets, you can specify whether DNS names use the instance IPv4 address or the instance ID. Valid values are `IP_V4` and `RESOURCE_NAME`."
+  type        = string
+  default     = null
+}
+
+variable "dns_resource_name_ipv4_enabled" {
+  description = "(Optional) Whether to resolve the IPv4 address of the EC2 instance for requests to your resource-name based domain."
+  type        = bool
+  default     = null
+}
+
+variable "dns_resource_name_ipv6_enabled" {
+  description = "(Optional) Whether to resolve the IPv6 address of the EC2 instance for requests to your resource-name based domain."
+  type        = bool
+  default     = null
+}
+
 variable "metadata_options" {
   description = <<EOF
   (Optional) The configuration for metadata of the instance. `metadata_options` block as defined below.

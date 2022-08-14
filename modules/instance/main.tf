@@ -16,6 +16,10 @@ locals {
 
 locals {
   is_t_type = replace(var.type, "/^t(2|3|3a){1}\\..*$/", "1") == "1" ? true : false
+  hostname_type = {
+    "IP_V4"         = "ip-name"
+    "RESOURCE_NAME" = "resource-name"
+  }
 }
 
 
@@ -32,7 +36,6 @@ locals {
 #
 # - `ipv6_address_count`
 # - `ipv6_addresses`
-# - `private_dns_name_options`
 # - `network_interface`
 #
 # - `ephemeral_block_device`
@@ -72,6 +75,15 @@ resource "aws_instance" "this" {
   associate_public_ip_address = var.auto_assign_public_ip_enabled
   private_ip                  = var.private_ip
   secondary_private_ips       = var.secondary_private_ips
+
+  # The options for the instance hostname. The default values are inherited from the subnet.
+  private_dns_name_options {
+    hostname_type = try(local.hostname_type[var.hostname_type], null)
+
+    # TODO: re-create on change below. bug.
+    enable_resource_name_dns_a_record    = var.dns_resource_name_ipv4_enabled
+    enable_resource_name_dns_aaaa_record = var.dns_resource_name_ipv6_enabled
+  }
 
 
   ## Metadata
@@ -181,6 +193,14 @@ resource "aws_spot_instance_request" "this" {
   associate_public_ip_address = var.auto_assign_public_ip_enabled
   private_ip                  = var.private_ip
   secondary_private_ips       = var.secondary_private_ips
+
+  # The options for the instance hostname. The default values are inherited from the subnet.
+  private_dns_name_options {
+    hostname_type = try(local.hostname_type[var.hostname_type], null)
+
+    enable_resource_name_dns_a_record    = var.dns_resource_name_ipv4_enabled
+    enable_resource_name_dns_aaaa_record = var.dns_resource_name_ipv6_enabled
+  }
 
 
   ## Metadata
