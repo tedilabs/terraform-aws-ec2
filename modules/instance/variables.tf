@@ -162,6 +162,23 @@ variable "ebs_optimized" {
   default     = null
 }
 
+variable "root_block_device" {
+  description = <<EOF
+  (Optional) The configuration for root block device of the instance. `root_block_device` block as defined below.
+    (Optional) `type` - The type of volume to attach.
+    (Optional) `size` - The size of the volume, in GiB. If you are creating the volume from a snapshot, then the size of the volume can’t be smaller than the size of the snapshot.
+    (Optional) `provisioned_iops` - The amount of provisioned IOPS. Only valid for type of `io1`, `io2` or `gp3`.
+    (Optional) `provisioned_throughput` - Throughput to provision for a volume in mebibytes per second (MiB/s). This is only valid for type of `gp3`.
+    (Optional) `encryption_enabled` - Whether to enable volume encryption. Defaults to `false`.
+    (Optional) `encryption_kms_key` - The ARN(Amazon Resource Name) of the KMS Key to use when encrypting the volume.
+    (Optional) `delete_on_termination` - Whether the volume should be destroyed on instance termination. Defaults to `true`.
+    (Optional) `tags` - A map of tags to assign to the device.
+  EOF
+  type        = any
+  default     = {}
+  nullable    = false
+}
+
 variable "shutdown_behavior" {
   description = "(Optional) The instance behavior when an OS-level shutdown is performed. Instances can be either terminated or stopped. Valid values are `STOP` or `TERMINATE`. Amazon defaults this to `STOP` for EBS-backed instances and `TERMINATE` for instance-store instances. Cannot be set on instance-store instances."
   type        = string

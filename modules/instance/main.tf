@@ -39,7 +39,6 @@ locals {
 # - `network_interface`
 #
 # - `ephemeral_block_device`
-# - `root_block_device`
 # - `ebs_block_device`
 #
 # - `capacity_reservation_specification`
@@ -122,6 +121,25 @@ resource "aws_instance" "this" {
 
   ## Storage
   ebs_optimized = var.ebs_optimized
+
+  dynamic "root_block_device" {
+    for_each = length(keys(var.root_block_device)) > 0 ? [var.root_block_device] : []
+    iterator = device
+
+    content {
+      volume_type = try(device.value.type, null)
+      volume_size = try(device.value.size, null)
+      iops        = try(device.value.provisioned_iops, null)
+      throughput  = try(device.value.provisioned_throughput, null)
+
+      encrypted  = try(device.value.encryption_enabled, null)
+      kms_key_id = try(device.value.encryption_kms_key, null)
+
+      delete_on_termination = try(device.value.delete_on_termination, null)
+
+      tags = try(device.value.tags, null)
+    }
+  }
 
 
   ## Attributes
@@ -239,6 +257,25 @@ resource "aws_spot_instance_request" "this" {
 
   ## Storage
   ebs_optimized = var.ebs_optimized
+
+  dynamic "root_block_device" {
+    for_each = length(keys(var.root_block_device)) > 0 ? [var.root_block_device] : []
+    iterator = device
+
+    content {
+      volume_type = try(device.value.type, null)
+      volume_size = try(device.value.size, null)
+      iops        = try(device.value.provisioned_iops, null)
+      throughput  = try(device.value.provisioned_throughput, null)
+
+      encrypted  = try(device.value.encryption_enabled, null)
+      kms_key_id = try(device.value.encryption_kms_key, null)
+
+      delete_on_termination = try(device.value.delete_on_termination, null)
+
+      tags = try(device.value.tags, null)
+    }
+  }
 
 
   ## Attributes
