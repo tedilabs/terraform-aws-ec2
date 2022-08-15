@@ -1,11 +1,16 @@
+locals {
+  instance = try(aws_instance.this[0], aws_spot_instance_request.this[0])
+}
+
+# TODO: check for spot instance id
 output "id" {
   description = "The ID of the instance."
-  value       = try(aws_instance.this[0].id, aws_spot_instance_request.this[0].id)
+  value       = local.instance.id
 }
 
 output "arn" {
   description = "The ARN of the instance."
-  value       = try(aws_instance.this[0].arn, aws_spot_instance_request.this[0].arn)
+  value       = local.instance.arn
 }
 
 output "name" {
@@ -16,37 +21,37 @@ output "name" {
 # TODO: Capitalize
 output "state" {
   description = "The state of the instance. One of: `pending`, `running`, `shutting-down`, `terminated`, `stopping`, `stopped`."
-  value       = try(aws_instance.this[0].instance_state, aws_spot_instance_request.this[0].instance_state)
+  value       = local.instance.instance_state
 }
 
 output "type" {
   description = "The instance type to use for the instance."
-  value       = try(aws_instance.this[0].instance_type, aws_spot_instance_request.this[0].instance_type)
+  value       = local.instance.instance_type
 }
 
 output "ami" {
   description = "The AMI to run on the instance."
-  value       = try(aws_instance.this[0].ami, aws_spot_instance_request.this[0].ami)
+  value       = local.instance.ami
 }
 
 output "ssh_key" {
   description = "The name of the SSH Key to access the instance."
-  value       = try(aws_instance.this[0].key_name, aws_spot_instance_request.this[0].key_name)
+  value       = local.instance.key_name
 }
 
 output "instance_profile" {
   description = "The IAM Instance Profile of the instance."
-  value       = try(aws_instance.this[0].iam_instance_profile, aws_spot_instance_request.this[0].iam_instance_profile)
+  value       = local.instance.iam_instance_profile
 }
 
 output "private_domain" {
   description = "The private DNS name assigned to the instance. Can only be used inside the Amazon EC2, and only available if you've enabled DNS hostnames for your VPC."
-  value       = try(aws_instance.this[0].private_dns, aws_spot_instance_request.this[0].private_dns)
+  value       = local.instance.private_dns
 }
 
 output "public_domain" {
   description = "The public DNS name assigned to the instance. For EC2-VPC, this is only available if you've enabled DNS hostnames for your VPC."
-  value       = try(aws_instance.this[0].public_dns, aws_spot_instance_request.this[0].public_dns)
+  value       = local.instance.public_dns
 }
 
 output "network" {
@@ -65,15 +70,15 @@ output "network" {
     `dns_resource_name_ipv6_enabled` - Whether to resolve the IPv6 address of the EC2 instance for requests to your resource-name based domain.
   EOF
   value = {
-    availability_zone         = try(aws_instance.this[0].availability_zone, aws_spot_instance_request.this[0].availability_zone)
-    subnet_id                 = try(aws_instance.this[0].subnet_id, aws_spot_instance_request.this[0].subnet_id)
-    security_groups           = try(aws_instance.this[0].vpc_security_group_ids, aws_spot_instance_request.this[0].vpc_security_group_ids)
-    source_dest_check_enabled = try(aws_instance.this[0].source_dest_check, aws_spot_instance_request.this[0].source_dest_check)
+    availability_zone         = local.instance.availability_zone
+    subnet_id                 = local.instance.subnet_id
+    security_groups           = local.instance.vpc_security_group_ids
+    source_dest_check_enabled = local.instance.source_dest_check
 
-    auto_assign_public_ip_enabled = try(aws_instance.this[0].associate_public_ip_address, aws_spot_instance_request.this[0].associate_public_ip_address)
-    public_ip                     = try(aws_instance.this[0].public_ip, aws_spot_instance_request.this[0].private_ip)
-    private_ip                    = try(aws_instance.this[0].private_ip, aws_spot_instance_request.this[0].private_ip)
-    secondary_private_ips         = try(aws_instance.this[0].secondary_private_ips, aws_spot_instance_request.this[0].secondary_private_ips)
+    auto_assign_public_ip_enabled = local.instance.associate_public_ip_address
+    public_ip                     = local.instance.public_ip
+    private_ip                    = local.instance.private_ip
+    secondary_private_ips         = local.instance.secondary_private_ips
     eip_associations = {
       for id, association in aws_eip_association.this :
       association.public_ip => {
@@ -87,9 +92,9 @@ output "network" {
     hostname_type = {
       for k, v in local.hostname_type :
       v => k
-    }[try(aws_instance.this[0].private_dns_name_options[0].hostname_type, aws_spot_instance_request.this[0].private_dns_name_options[0].hostname_type)]
-    dns_resource_name_ipv4_enabled = try(aws_instance.this[0].private_dns_name_options[0].enable_resource_name_dns_a_record, aws_spot_instance_request.this[0].private_dns_name_options[0].enable_resource_name_dns_a_record)
-    dns_resource_name_ipv6_enabled = try(aws_instance.this[0].private_dns_name_options[0].enable_resource_name_dns_aaaa_record, aws_spot_instance_request.this[0].private_dns_name_options[0].enable_resource_name_dns_aaaa_record)
+    }[local.instance.private_dns_name_options[0].hostname_type]
+    dns_resource_name_ipv4_enabled = local.instance.private_dns_name_options[0].enable_resource_name_dns_a_record
+    dns_resource_name_ipv6_enabled = local.instance.private_dns_name_options[0].enable_resource_name_dns_aaaa_record
   }
 }
 
@@ -99,12 +104,12 @@ output "metadata" {
   EOF
   value = {
     http = {
-      enabled                = try(aws_instance.this[0].metadata_options[0].http_endpoint, aws_spot_instance_request.this[0].metadata_options[0].http_endpoint) == "enabled"
-      token_required         = try(aws_instance.this[0].metadata_options[0].http_tokens, aws_spot_instance_request.this[0].metadata_options[0].http_tokens) == "required"
-      put_response_hop_limit = try(aws_instance.this[0].metadata_options[0].http_put_response_hop_limit, aws_spot_instance_request.this[0].metadata_options[0].http_put_response_hop_limit)
+      enabled                = local.instance.metadata_options[0].http_endpoint == "enabled"
+      token_required         = local.instance.metadata_options[0].http_tokens == "required"
+      put_response_hop_limit = local.instance.metadata_options[0].http_put_response_hop_limit
     }
     instance_tags = {
-      enabled = try(aws_instance.this[0].metadata_options[0].instance_metadata_tags, aws_spot_instance_request.this[0].metadata_options[0].instance_metadata_tags) == "enabled"
+      enabled = local.instance.metadata_options[0].instance_metadata_tags == "enabled"
     }
   }
 }
@@ -117,26 +122,22 @@ output "cpu" {
   EOF
   value = {
     options = {
-      core_count       = try(aws_instance.this[0].cpu_core_count, aws_spot_instance_request.this[0].cpu_core_count)
-      threads_per_core = try(aws_instance.this[0].cpu_threads_per_core, aws_spot_instance_request.this[0].cpu_threads_per_core)
+      core_count       = local.instance.cpu_core_count
+      threads_per_core = local.instance.cpu_threads_per_core
     }
-    credit_specification = try(upper(aws_instance.this[0].credit_specification[0].cpu_credits), upper(aws_spot_instance_request.this[0].credit_specification[0].cpu_credits), null)
+    credit_specification = try(upper(local.instance.credit_specification[0].cpu_credits), null)
   }
 }
 
 output "host" {
   description = "The configuration of host and placement group for the instance."
   value = {
-    id      = try(aws_instance.this[0].host_id, aws_spot_instance_request.this[0].host_id)
-    tenancy = try(upper(aws_instance.this[0].tenancy), upper(aws_spot_instance_request.this[0].tenancy))
+    id      = local.instance.host_id
+    tenancy = upper(local.instance.tenancy)
     placement_group = try(
       {
-        name      = aws_instance.this[0].placement_group
-        partition = aws_instance.this[0].placement_partition_number
-      },
-      {
-        name      = aws_spot_instance_request.this[0].placement_group
-        partition = aws_spot_instance_request.this[0].placement_partition_number
+        name      = local.instance.placement_group
+        partition = local.instance.placement_partition_number
       },
       null
     )
@@ -146,22 +147,22 @@ output "host" {
 output "storage" {
   description = "The configuration of storage for the instance."
   value = {
-    ebs_optimized = try(aws_instance.this[0].ebs_optimized, aws_spot_instance_request.this[0].ebs_optimized)
+    ebs_optimized = local.instance.ebs_optimized
 
     root_block_device = {
-      id          = try(aws_instance.this[0].root_block_device[0].volume_id, aws_spot_instance_request.this[0].root_block_device[0].volume_id)
-      device_name = try(aws_instance.this[0].root_block_device[0].device_name, aws_spot_instance_request.this[0].root_block_device[0].device_name)
-      type        = try(aws_instance.this[0].root_block_device[0].volume_type, aws_spot_instance_request.this[0].root_block_device[0].volume_type)
-      size        = try(aws_instance.this[0].root_block_device[0].volume_size, aws_spot_instance_request.this[0].root_block_device[0].volume_size)
+      id          = local.instance.root_block_device[0].volume_id
+      device_name = local.instance.root_block_device[0].device_name
+      type        = local.instance.root_block_device[0].volume_type
+      size        = local.instance.root_block_device[0].volume_size
 
-      provisioned_iops       = try(aws_instance.this[0].root_block_device[0].iops, aws_spot_instance_request.this[0].root_block_device[0].iops)
-      provisioned_throughput = try(aws_instance.this[0].root_block_device[0].throughput, aws_spot_instance_request.this[0].root_block_device[0].throughput)
+      provisioned_iops       = local.instance.root_block_device[0].iops
+      provisioned_throughput = local.instance.root_block_device[0].throughput
 
       encryption = {
-        enabled = try(aws_instance.this[0].root_block_device[0].encrypted, aws_spot_instance_request.this[0].root_block_device[0].encrypted)
-        kms_key = try(aws_instance.this[0].root_block_device[0].kms_key_id, aws_spot_instance_request.this[0].root_block_device[0].kms_key_id)
+        enabled = local.instance.root_block_device[0].encrypted
+        kms_key = local.instance.root_block_device[0].kms_key_id
       }
-      delete_on_termination = try(aws_instance.this[0].root_block_device[0].delete_on_termination, aws_spot_instance_request.this[0].root_block_device[0].delete_on_termination)
+      delete_on_termination = local.instance.root_block_device[0].delete_on_termination
     }
   }
 }
@@ -169,13 +170,13 @@ output "storage" {
 output "attributes" {
   description = "A set of attributes that applied to the instance."
   value = {
-    shutdown_behavior              = try(upper(aws_instance.this[0].instance_initiated_shutdown_behavior), upper(aws_spot_instance_request.this[0].instance_initiated_shutdown_behavior))
-    stop_hibernation_enabled       = try(aws_instance.this[0].hibernation, aws_spot_instance_request.this[0].hibernation)
-    stop_protection_enabled        = try(aws_instance.this[0].disable_api_stop, aws_spot_instance_request.this[0].disable_api_stop)
-    termination_protection_enabled = try(aws_instance.this[0].disable_api_termination, aws_spot_instance_request.this[0].disable_api_termination)
-    auto_recovery_enabled          = try(upper(aws_instance.this[0].maintenance_options[0].auto_recovery), upper(aws_spot_instance_request.this[0].maintenance_options[0].auto_recovery)) == "DEFAULT"
-    nitro_enclave_enabled          = try(aws_instance.this[0].enclave_options[0].enabled, aws_spot_instance_request.this[0].enclave_options[0].enabled)
-    monitoring_enabled             = try(aws_instance.this[0].monitoring, aws_spot_instance_request.this[0].monitoring)
+    shutdown_behavior              = upper(local.instance.instance_initiated_shutdown_behavior)
+    stop_hibernation_enabled       = local.instance.hibernation
+    stop_protection_enabled        = local.instance.disable_api_stop
+    termination_protection_enabled = local.instance.disable_api_termination
+    auto_recovery_enabled          = upper(local.instance.maintenance_options[0].auto_recovery) == "DEFAULT"
+    nitro_enclave_enabled          = local.instance.enclave_options[0].enabled
+    monitoring_enabled             = local.instance.monitoring
   }
 }
 
@@ -185,10 +186,10 @@ output "launch_template" {
   EOF
   value = (var.launch_template != null
     ? {
-      id   = try(aws_instance.this[0].launch_template[0].id, aws_spot_instance_request.this[0].launch_template[0].id)
-      name = try(aws_instance.this[0].launch_template[0].name, aws_spot_instance_request.this[0].launch_template[0].name)
+      id   = local.instance.launch_template[0].id
+      name = local.instance.launch_template[0].name
 
-      version = try(aws_instance.this[0].launch_template[0].version, aws_spot_instance_request.this[0].launch_template[0].version)
+      version = local.instance.launch_template[0].version
     }
     : null
   )
