@@ -146,8 +146,22 @@ output "host" {
 output "storage" {
   description = "The configuration of storage for the instance."
   value = {
-    ebs = {
-      optimized = try(aws_instance.this[0].ebs_optimized, aws_spot_instance_request.this[0].ebs_optimized)
+    ebs_optimized = try(aws_instance.this[0].ebs_optimized, aws_spot_instance_request.this[0].ebs_optimized)
+
+    root_block_device = {
+      id          = try(aws_instance.this[0].root_block_device[0].volume_id, aws_spot_instance_request.this[0].root_block_device[0].volume_id)
+      device_name = try(aws_instance.this[0].root_block_device[0].device_name, aws_spot_instance_request.this[0].root_block_device[0].device_name)
+      type        = try(aws_instance.this[0].root_block_device[0].volume_type, aws_spot_instance_request.this[0].root_block_device[0].volume_type)
+      size        = try(aws_instance.this[0].root_block_device[0].volume_size, aws_spot_instance_request.this[0].root_block_device[0].volume_size)
+
+      provisioned_iops       = try(aws_instance.this[0].root_block_device[0].iops, aws_spot_instance_request.this[0].root_block_device[0].iops)
+      provisioned_throughput = try(aws_instance.this[0].root_block_device[0].throughput, aws_spot_instance_request.this[0].root_block_device[0].throughput)
+
+      encryption = {
+        enabled = try(aws_instance.this[0].root_block_device[0].encrypted, aws_spot_instance_request.this[0].root_block_device[0].encrypted)
+        kms_key = try(aws_instance.this[0].root_block_device[0].kms_key_id, aws_spot_instance_request.this[0].root_block_device[0].kms_key_id)
+      }
+      delete_on_termination = try(aws_instance.this[0].root_block_device[0].delete_on_termination, aws_spot_instance_request.this[0].root_block_device[0].delete_on_termination)
     }
   }
 }
@@ -193,6 +207,6 @@ output "zzz" {
   value = {
     for k, v in try(aws_instance.this[0], aws_spot_instance_request.this[0]) :
     k => v
-    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template", "private_dns_name_options"], k)
+    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template", "private_dns_name_options", "root_block_device"], k)
   }
 }
