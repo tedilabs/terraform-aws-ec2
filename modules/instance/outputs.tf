@@ -44,16 +44,6 @@ output "instance_profile" {
   value       = local.instance.iam_instance_profile
 }
 
-output "private_domain" {
-  description = "The private DNS name assigned to the instance. Can only be used inside the Amazon EC2, and only available if you've enabled DNS hostnames for your VPC."
-  value       = local.instance.private_dns
-}
-
-output "public_domain" {
-  description = "The public DNS name assigned to the instance. For EC2-VPC, this is only available if you've enabled DNS hostnames for your VPC."
-  value       = local.instance.public_dns
-}
-
 output "network" {
   description = <<EOF
   The network configuration for the instance.
@@ -65,6 +55,8 @@ output "network" {
     `private_ip` - The private IP address assigned to the instance.
     `secondary_private_ips` - A list of secondary private IPv4 addresses assigned to the instance's primary network interface.
 
+    `public_domain` - The public DNS name assigned to the instance. For EC2-VPC, this is only available if you've enabled DNS hostnames for your VPC.
+    `private_domain` - The private DNS name assigned to the instance. Can only be used inside the Amazon EC2, and only available if you've enabled DNS hostnames for your VPC.
     `hostname_type` - The type of hostname for the EC2 instances.
     `dns_resource_name_ipv4_enabled` - Whether to resolve the IPv4 address of the EC2 instance for requests to your resource-name based domain.
     `dns_resource_name_ipv6_enabled` - Whether to resolve the IPv6 address of the EC2 instance for requests to your resource-name based domain.
@@ -75,6 +67,7 @@ output "network" {
     security_groups           = local.instance.vpc_security_group_ids
     source_dest_check_enabled = local.instance.source_dest_check
 
+    primary_network_interface_id  = local.instance.primary_network_interface_id
     auto_assign_public_ip_enabled = local.instance.associate_public_ip_address
     public_ip                     = local.instance.public_ip
     private_ip                    = local.instance.private_ip
@@ -89,6 +82,8 @@ output "network" {
       }
     }
 
+    public_domain  = local.instance.public_dns
+    private_domain = local.instance.private_dns
     hostname_type = {
       for k, v in local.hostname_type :
       v => k
@@ -208,6 +203,6 @@ output "zzz" {
   value = {
     for k, v in try(aws_instance.this[0], aws_spot_instance_request.this[0]) :
     k => v
-    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template", "private_dns_name_options", "root_block_device"], k)
+    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template", "private_dns_name_options", "root_block_device", "primary_network_interface_id"], k)
   }
 }
