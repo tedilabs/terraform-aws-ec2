@@ -144,7 +144,7 @@ output "storage" {
   value = {
     ebs_optimized = local.instance.ebs_optimized
 
-    root_block_device = {
+    root_volume = {
       id          = local.instance.root_block_device[0].volume_id
       device_name = local.instance.root_block_device[0].device_name
       type        = local.instance.root_block_device[0].volume_type
@@ -159,6 +159,7 @@ output "storage" {
       }
       delete_on_termination = local.instance.root_block_device[0].delete_on_termination
     }
+    instance_store_volumes = local.instance.ephemeral_block_device
   }
 }
 
@@ -203,6 +204,6 @@ output "zzz" {
   value = {
     for k, v in try(aws_instance.this[0], aws_spot_instance_request.this[0]) :
     k => v
-    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template", "private_dns_name_options", "root_block_device", "primary_network_interface_id"], k)
+    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template", "private_dns_name_options", "root_block_device", "primary_network_interface_id", "ephemeral_block_device"], k)
   }
 }
