@@ -29,6 +29,7 @@ locals {
 
 # INFO: Not supported attributes
 # - `security_groups`
+# - `ebs_block_device` - Use `aws_ebs_volume` and `aws_volume_attachment`
 #
 # - `user_data`
 # - `user_data_base64`
@@ -37,9 +38,6 @@ locals {
 # - `ipv6_address_count`
 # - `ipv6_addresses`
 # - `network_interface`
-#
-# - `ephemeral_block_device`
-# - `ebs_block_device`
 #
 # - `capacity_reservation_specification`
 # - `get_password_data`
@@ -123,21 +121,32 @@ resource "aws_instance" "this" {
   ebs_optimized = var.ebs_optimized
 
   dynamic "root_block_device" {
-    for_each = length(keys(var.root_block_device)) > 0 ? [var.root_block_device] : []
-    iterator = device
+    for_each = length(keys(var.root_volume)) > 0 ? [var.root_volume] : []
+    iterator = volume
 
     content {
-      volume_type = try(device.value.type, null)
-      volume_size = try(device.value.size, null)
-      iops        = try(device.value.provisioned_iops, null)
-      throughput  = try(device.value.provisioned_throughput, null)
+      volume_type = try(volume.value.type, null)
+      volume_size = try(volume.value.size, null)
+      iops        = try(volume.value.provisioned_iops, null)
+      throughput  = try(volume.value.provisioned_throughput, null)
 
-      encrypted  = try(device.value.encryption_enabled, null)
-      kms_key_id = try(device.value.encryption_kms_key, null)
+      encrypted  = try(volume.value.encryption_enabled, null)
+      kms_key_id = try(volume.value.encryption_kms_key, null)
 
-      delete_on_termination = try(device.value.delete_on_termination, null)
+      delete_on_termination = try(volume.value.delete_on_termination, null)
 
-      tags = try(device.value.tags, null)
+      tags = try(volume.value.tags, null)
+    }
+  }
+
+  dynamic "ephemeral_block_device" {
+    for_each = var.instance_store_volumes
+    iterator = volume
+
+    content {
+      device_name  = volume.value.device_name
+      virtual_name = try(volume.value.virtual_name, null)
+      no_device    = try(volume.value.no_device, false)
     }
   }
 
@@ -181,6 +190,7 @@ resource "aws_instance" "this" {
 
 # INFO: Not supported attributes
 # - `security_groups`
+# - `ebs_block_device` - Use `aws_ebs_volume` and `aws_volume_attachment`
 resource "aws_spot_instance_request" "this" {
   count = var.spot_enabled ? 1 : 0
 
@@ -259,21 +269,32 @@ resource "aws_spot_instance_request" "this" {
   ebs_optimized = var.ebs_optimized
 
   dynamic "root_block_device" {
-    for_each = length(keys(var.root_block_device)) > 0 ? [var.root_block_device] : []
-    iterator = device
+    for_each = length(keys(var.root_volume)) > 0 ? [var.root_volume] : []
+    iterator = volume
 
     content {
-      volume_type = try(device.value.type, null)
-      volume_size = try(device.value.size, null)
-      iops        = try(device.value.provisioned_iops, null)
-      throughput  = try(device.value.provisioned_throughput, null)
+      volume_type = try(volume.value.type, null)
+      volume_size = try(volume.value.size, null)
+      iops        = try(volume.value.provisioned_iops, null)
+      throughput  = try(volume.value.provisioned_throughput, null)
 
-      encrypted  = try(device.value.encryption_enabled, null)
-      kms_key_id = try(device.value.encryption_kms_key, null)
+      encrypted  = try(volume.value.encryption_enabled, null)
+      kms_key_id = try(volume.value.encryption_kms_key, null)
 
-      delete_on_termination = try(device.value.delete_on_termination, null)
+      delete_on_termination = try(volume.value.delete_on_termination, null)
 
-      tags = try(device.value.tags, null)
+      tags = try(volume.value.tags, null)
+    }
+  }
+
+  dynamic "ephemeral_block_device" {
+    for_each = var.instance_store_volumes
+    iterator = volume
+
+    content {
+      device_name  = volume.value.device_name
+      virtual_name = try(volume.value.virtual_name, null)
+      no_device    = try(volume.value.no_device, false)
     }
   }
 

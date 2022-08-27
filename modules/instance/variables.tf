@@ -162,9 +162,9 @@ variable "ebs_optimized" {
   default     = null
 }
 
-variable "root_block_device" {
+variable "root_volume" {
   description = <<EOF
-  (Optional) The configuration for root block device of the instance. `root_block_device` block as defined below.
+  (Optional) The configuration for root volume (root block device) of the instance. `root_volume` block as defined below.
     (Optional) `type` - The type of volume to attach.
     (Optional) `size` - The size of the volume, in GiB. If you are creating the volume from a snapshot, then the size of the volume can’t be smaller than the size of the snapshot.
     (Optional) `provisioned_iops` - The amount of provisioned IOPS. Only valid for type of `io1`, `io2` or `gp3`.
@@ -176,6 +176,18 @@ variable "root_block_device" {
   EOF
   type        = any
   default     = {}
+  nullable    = false
+}
+
+variable "instance_store_volumes" {
+  description = <<EOF
+  (Optional) The configuration for instance store volumes (also known as ephemeral volumes) of the instance. This is only required non-NVME instance store volumes (for old generation EC2 instance types). Each item of `instance_store_volumes` as defined below.
+    (Required) `device_name` - The device name of the instance store to mount on the instance. For example, `/dev/sdh` or `xvdh`.
+    (Optional) `virtual_name` - The virtual device name (ephemeral N). Instance store volumes are numbered starting from 0. An instance type with 2 available instance store volumes can specify mappings for ephemeral0 and ephemeral1. The number of available instance store volumes depends on the instance type. After you connect to the instance, you must mount the volume.
+    (Optional) `no_device` - Whether to suppress the specified device included in the AMI's block device mapping. Defaults to `false`.
+  EOF
+  type        = any
+  default     = []
   nullable    = false
 }
 
