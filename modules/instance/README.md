@@ -14,12 +14,14 @@ This module creates following resources.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.20 |
+| <a name="requirement_cloudinit"></a> [cloudinit](#requirement\_cloudinit) | >= 2.2 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.20.1 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.28.0 |
+| <a name="provider_cloudinit"></a> [cloudinit](#provider\_cloudinit) | 2.2.0 |
 
 ## Modules
 
@@ -34,6 +36,7 @@ No modules.
 | [aws_instance.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
 | [aws_resourcegroups_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/resourcegroups_group) | resource |
 | [aws_spot_instance_request.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/spot_instance_request) | resource |
+| [cloudinit_config.this](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
 
 ## Inputs
 
@@ -82,6 +85,7 @@ No modules.
 | <a name="input_termination_protection_enabled"></a> [termination\_protection\_enabled](#input\_termination\_protection\_enabled) | (Optional) Indicates whether termination of the instance via the AWS API will be protected. Defaults to `false`. | `bool` | `false` | no |
 | <a name="input_timeouts"></a> [timeouts](#input\_timeouts) | (Optional) How long to wait for the instance to be created/updated/deleted. | `map(string)` | <pre>{<br>  "create": "10m",<br>  "delete": "20m",<br>  "update": "10m"<br>}</pre> | no |
 | <a name="input_type"></a> [type](#input\_type) | (Optional) The instance type to use for the instance. Updates to this field will trigger a stop/start of the EC2 instance. | `string` | `null` | no |
+| <a name="input_user_data"></a> [user\_data](#input\_user\_data) | (Optional) The configuration for metadata of the instance. `metadata_options` block as defined below.<br>    (Optional) `replace_on_change` - Whether to trigger a destroy and recreate when user data is changed. Defaults to `false`.<br>    (Optional) `encoding` - A method to encode the content of user-data to delivery. Valid values are `PLAINTEXT`, `BASE64` or `BASE64_GZIP`. Defaults to `PLAINTEXT`.<br>    (Optional) `content` - A content of user-data for shell script or cloud-config. Only required if `mime_enabled` is `false`.<br>    (Optional) `mime_enabled` - Whether to use Multipart MIME for the user-data format. Defaults to `false`.<br>    (Optional) `mime_parts` - A list of parts to produce multipart MIME messages of cloud-init. Only required if `mime_enabled` is `true`. Each item of `mime_parts` as defined below.<br>      (Required) `content` - A body content for the part.<br>      (Optional) `content_type` - A MIME-style content type to report in the header for the part. Valid values are `cloud-boothook`, `cloud-config`, `cloud-config-archive`, `cloud-cnofig-jsonp`, `jinja2`, `part-handler`, `x-include-once-url`, `x-include-url`, `x-shellscript`, `x-shellscript-per-boot`, `x-shellscript-per-instance`, `x-shellscript-per-once`.<br>      (Optional) `merge_type` - A value for the `X-Merge-Type` header of the part, to control cloud-init merging behavior.<br>      (Optional) `filename` - A filename to report in the header for the part. | `any` | `{}` | no |
 
 ## Outputs
 
@@ -103,5 +107,6 @@ No modules.
 | <a name="output_state"></a> [state](#output\_state) | The state of the instance. One of: `pending`, `running`, `shutting-down`, `terminated`, `stopping`, `stopped`. |
 | <a name="output_storage"></a> [storage](#output\_storage) | The configuration of storage for the instance. |
 | <a name="output_type"></a> [type](#output\_type) | The instance type to use for the instance. |
+| <a name="output_user_data"></a> [user\_data](#output\_user\_data) | The configuration for user-data of the instance. |
 | <a name="output_zzz"></a> [zzz](#output\_zzz) | The configuration of rule groups associated with the firewall. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

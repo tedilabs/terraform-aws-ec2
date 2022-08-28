@@ -99,6 +99,51 @@ variable "dns_resource_name_ipv6_enabled" {
   default     = null
 }
 
+variable "user_data" {
+  description = <<EOF
+  (Optional) The configuration for metadata of the instance. `metadata_options` block as defined below.
+    (Optional) `replace_on_change` - Whether to trigger a destroy and recreate when user data is changed. Defaults to `false`.
+    (Optional) `encoding` - A method to encode the content of user-data to delivery. Valid values are `PLAINTEXT`, `BASE64` or `BASE64_GZIP`. Defaults to `PLAINTEXT`.
+    (Optional) `content` - A content of user-data for shell script or cloud-config. Only required if `mime_enabled` is `false`.
+    (Optional) `mime_enabled` - Whether to use Multipart MIME for the user-data format. Defaults to `false`.
+    (Optional) `mime_parts` - A list of parts to produce multipart MIME messages of cloud-init. Only required if `mime_enabled` is `true`. Each item of `mime_parts` as defined below.
+      (Required) `content` - A body content for the part.
+      (Optional) `content_type` - A MIME-style content type to report in the header for the part. Valid values are `cloud-boothook`, `cloud-config`, `cloud-config-archive`, `cloud-cnofig-jsonp`, `jinja2`, `part-handler`, `x-include-once-url`, `x-include-url`, `x-shellscript`, `x-shellscript-per-boot`, `x-shellscript-per-instance`, `x-shellscript-per-once`.
+      (Optional) `merge_type` - A value for the `X-Merge-Type` header of the part, to control cloud-init merging behavior.
+      (Optional) `filename` - A filename to report in the header for the part.
+  EOF
+  type        = any
+  default     = {}
+  nullable    = false
+
+  validation {
+    condition     = contains(["PLAINTEXT", "BASE64", "BASE64_GZIP"], try(var.user_data.encoding, "PLAINTEXT"))
+    error_message = "Valid values are `PLAINTEXT`, `BASE64` or `BASE64_GZIP`."
+  }
+
+  validation {
+    condition = alltrue([
+      for part in try(var.user_data.mime_parts, []) :
+      contains([
+        "cloud-boothook",
+        "cloud-config",
+        "cloud-config-archive",
+        "cloud-config-jsonp",
+        "jinja2",
+        "part-handler",
+        "x-include-once-url",
+        "x-include-url",
+        "x-shellscript",
+        "x-shellscript-per-boot",
+        "x-shellscript-per-instance",
+        "x-shellscript-per-once",
+      ], try(part.content_type, "x-shellscript"))
+      if try(var.user_data.mime_enabled, false)
+    ])
+    error_message = "Valid values for `content_type` are `cloud-boothook`, `cloud-config`, `cloud-config-archive`, `cloud-cnofig-jsonp`, `jinja2`, `part-handler`, `x-include-once-url`, `x-include-url`, `x-shellscript`, `x-shellscript-per-boot`, `x-shellscript-per-instance`, `x-shellscript-per-once`."
+  }
+}
+
 variable "metadata_options" {
   description = <<EOF
   (Optional) The configuration for metadata of the instance. `metadata_options` block as defined below.
