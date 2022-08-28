@@ -93,6 +93,29 @@ output "network" {
   }
 }
 
+output "user_data" {
+  description = <<EOF
+  The configuration for user-data of the instance.
+  EOF
+  value = {
+    replace_on_change = local.instance.user_data_replace_on_change
+    encoding          = local.user_data_encoding
+    checksum          = local.user_data_checksum
+
+    mime_enabled = local.user_data_mime_enabled
+    mime_parts = (local.user_data_mime_enabled
+      ? [
+        for part in data.cloudinit_config.this[0].part : {
+          filename     = part.filename
+          content_type = split("/", part.content_type)[1]
+          merge_type   = part.merge_type
+        }
+      ]
+      : []
+    )
+  }
+}
+
 output "metadata" {
   description = <<EOF
   The configuration for metadata of the instance.
@@ -204,6 +227,6 @@ output "zzz" {
   value = {
     for k, v in try(aws_instance.this[0], aws_spot_instance_request.this[0]) :
     k => v
-    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template", "private_dns_name_options", "root_block_device", "primary_network_interface_id", "ephemeral_block_device"], k)
+    if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template", "private_dns_name_options", "root_block_device", "primary_network_interface_id", "ephemeral_block_device", "user_data_replace_on_change", "user_data", "user_data_base64"], k)
   }
 }

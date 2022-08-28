@@ -31,10 +31,6 @@ locals {
 # - `security_groups`
 # - `ebs_block_device` - Use `aws_ebs_volume` and `aws_volume_attachment`
 #
-# - `user_data`
-# - `user_data_base64`
-# - `user_data_replace_on_change`
-#
 # - `ipv6_address_count`
 # - `ipv6_addresses`
 # - `network_interface`
@@ -83,7 +79,17 @@ resource "aws_instance" "this" {
   }
 
 
-  ## Metadata
+  ## User Data & Metadata
+  user_data = (local.user_data_encoding == "PLAINTEXT"
+    ? local.user_data
+    : null
+  )
+  user_data_base64 = (local.user_data_encoding != "PLAINTEXT"
+    ? local.user_data
+    : null
+  )
+  user_data_replace_on_change = local.user_data_replace_on_change
+
   dynamic "metadata_options" {
     for_each = var.metadata_options != null ? [var.metadata_options] : []
     iterator = metadata
@@ -231,7 +237,17 @@ resource "aws_spot_instance_request" "this" {
   }
 
 
-  ## Metadata
+  ## User Data & Metadata
+  user_data = (local.user_data_encoding == "PLAINTEXT"
+    ? local.user_data
+    : null
+  )
+  user_data_base64 = (local.user_data_encoding != "PLAINTEXT"
+    ? local.user_data
+    : null
+  )
+  user_data_replace_on_change = local.user_data_replace_on_change
+
   dynamic "metadata_options" {
     for_each = var.metadata_options != null ? [var.metadata_options] : []
     iterator = metadata
