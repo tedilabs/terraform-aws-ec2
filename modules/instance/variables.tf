@@ -23,7 +23,22 @@ variable "ssh_key" {
 }
 
 variable "instance_profile" {
-  description = "(Optional) The IAM Instance Profile to launch the instance with. Specified as the name of the Instance Profile. Ensure your credentials have the correct permission to assign the instance profile according to the EC2 documentation, notably `iam:PassRole`."
+  description = <<EOF
+  (Optional) The configuration for the default instance profile of the instance. `instance_profile` block as defined below.
+    (Optional) `enabled` - Whether to trigger a destroy and recreate when user data is changed. Defaults to `false`.
+    (Optional) `name` - The name for the IAM role.
+    (Optional) `path` - The path for the IAM role.
+    (Optional) `description` - The description of the role.
+    (Optional) `assumable_roles` - List of IAM roles ARNs which can be assumed by the role.
+    (Optional) `policies` - List of IAM policies ARNs to attach to IAM role.
+    (Optional) `inline_policies` - Map of inline IAM policies to attach to IAM role. (`name` => `policy`).
+  EOF
+  type        = any
+  default     = null
+}
+
+variable "custom_instance_profile" {
+  description = "(Optional) The IAM Instance Profile to replace the default instance profile which is managed by this module. Specified as the name of the Instance Profile. Ensure your credentials have the correct permission to assign the instance profile according to the EC2 documentation, notably `iam:PassRole`."
   type        = string
   default     = null
 }

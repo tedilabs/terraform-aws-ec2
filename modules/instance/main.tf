@@ -41,10 +41,13 @@ locals {
 resource "aws_instance" "this" {
   count = var.spot_enabled ? 0 : 1
 
-  instance_type        = var.type
-  ami                  = var.ami
-  key_name             = var.ssh_key
-  iam_instance_profile = var.instance_profile
+  instance_type = var.type
+  ami           = var.ami
+  key_name      = var.ssh_key
+  iam_instance_profile = (try(var.instance_profile.enabled, true)
+    ? module.instance_profile[0].name
+    : var.custom_instance_profile
+  )
 
   dynamic "launch_template" {
     for_each = var.launch_template != null ? [var.launch_template] : []
@@ -200,10 +203,13 @@ resource "aws_instance" "this" {
 resource "aws_spot_instance_request" "this" {
   count = var.spot_enabled ? 1 : 0
 
-  instance_type        = var.type
-  ami                  = var.ami
-  key_name             = var.ssh_key
-  iam_instance_profile = var.instance_profile
+  instance_type = var.type
+  ami           = var.ami
+  key_name      = var.ssh_key
+  iam_instance_profile = (try(var.instance_profile.enabled, true)
+    ? module.instance_profile[0].name
+    : var.custom_instance_profile
+  )
 
   dynamic "launch_template" {
     for_each = var.launch_template != null ? [var.launch_template] : []
