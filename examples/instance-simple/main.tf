@@ -26,11 +26,11 @@ data "aws_ami" "ubuntu" {
 module "instance" {
   source = "../../modules/instance"
   # source  = "tedilabs/ec2/aws//modules/instance"
-  # version = "~> 0.1.0"
+  # version = "~> 0.2.0"
 
-  name          = "simple"
-  instance_type = "t2.micro"
-  instance_ami  = data.aws_ami.ubuntu.image_id
+  name = "simple"
+  type = "t2.micro"
+  ami  = data.aws_ami.ubuntu.image_id
 
   tags = {
     "project" = "terraform-aws-ec2-examples"

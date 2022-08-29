@@ -9,7 +9,7 @@ provider "aws" {
 module "cluster" {
   source = "../../modules/placement-group"
   # source  = "tedilabs/ec2/aws//modules/placement-group"
-  # version = "~> 0.1.0"
+  # version = "~> 0.2.0"
 
   name     = "cluster"
   strategy = "CLUSTER"
@@ -22,7 +22,7 @@ module "cluster" {
 module "partition" {
   source = "../../modules/placement-group"
   # source  = "tedilabs/ec2/aws//modules/placement-group"
-  # version = "~> 0.1.0"
+  # version = "~> 0.2.0"
 
   name           = "partition"
   strategy       = "PARTITION"
@@ -36,7 +36,7 @@ module "partition" {
 module "spread" {
   source = "../../modules/placement-group"
   # source  = "tedilabs/ec2/aws//modules/placement-group"
-  # version = "~> 0.1.0"
+  # version = "~> 0.2.0"
 
   name         = "spread"
   strategy     = "SPREAD"
