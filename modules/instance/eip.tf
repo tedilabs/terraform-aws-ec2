@@ -8,6 +8,7 @@ resource "aws_eip_association" "this" {
     for association in var.eip_associations :
     association.eip => association
   }
+
   allocation_id = each.key
 
   network_interface_id = (var.spot_enabled
