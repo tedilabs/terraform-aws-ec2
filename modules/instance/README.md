@@ -17,14 +17,14 @@ This module creates following resources.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.20 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.49 |
 | <a name="requirement_cloudinit"></a> [cloudinit](#requirement\_cloudinit) | >= 2.2 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.28.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 4.49.0 |
 | <a name="provider_cloudinit"></a> [cloudinit](#provider\_cloudinit) | 2.2.0 |
 
 ## Modules
@@ -38,10 +38,12 @@ This module creates following resources.
 | Name | Type |
 |------|------|
 | [aws_ami_from_instance.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ami_from_instance) | resource |
+| [aws_ec2_instance_state.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ec2_instance_state) | resource |
 | [aws_eip_association.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/eip_association) | resource |
 | [aws_instance.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
 | [aws_resourcegroups_group.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/resourcegroups_group) | resource |
 | [aws_spot_instance_request.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/spot_instance_request) | resource |
+| [aws_instance.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/instance) | data source |
 | [cloudinit_config.this](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
 
 ## Inputs
@@ -84,6 +86,7 @@ This module creates following resources.
 | <a name="input_source_dest_check_enabled"></a> [source\_dest\_check\_enabled](#input\_source\_dest\_check\_enabled) | (Optional) Whether the traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. Defaults to `true`. | `bool` | `null` | no |
 | <a name="input_spot_enabled"></a> [spot\_enabled](#input\_spot\_enabled) | (Optional) Whether to create the instance as a spot instance. | `bool` | `false` | no |
 | <a name="input_ssh_key"></a> [ssh\_key](#input\_ssh\_key) | (Optional) The name of the SSH Key that should be used to access the instance. | `string` | `null` | no |
+| <a name="input_state"></a> [state](#input\_state) | (Optional) The state of the instance. Valid values are `RUNNING`, `STOPPED` or `FORCED_STOP`. | `string` | `"RUNNING"` | no |
 | <a name="input_stop_hibernation_enabled"></a> [stop\_hibernation\_enabled](#input\_stop\_hibernation\_enabled) | (Optional) Indicates whether to support hibernation stop for the instance. Hibernation stops your instance and saves the contents of the instance’s RAM to the root volume. You cannot enable hibernation after launch. | `bool` | `null` | no |
 | <a name="input_stop_protection_enabled"></a> [stop\_protection\_enabled](#input\_stop\_protection\_enabled) | (Optional) Indicates whether stop of the instance via the AWS API will be protected. Defaults to `false`. | `bool` | `false` | no |
 | <a name="input_subnet_id"></a> [subnet\_id](#input\_subnet\_id) | (Optional) The ID of subnet in which to launch the instance. | `string` | `null` | no |
@@ -111,7 +114,7 @@ This module creates following resources.
 | <a name="output_name"></a> [name](#output\_name) | The name of the instance. |
 | <a name="output_network"></a> [network](#output\_network) | The network configuration for the instance.<br>    `availability_zone` - The Availability Zone of the instance.<br>    `subnet_id` - The ID of subnet of the launched instance.<br>    `source_dest_check_enabled` - Whether the traffic is routed to the instance when the destination address does not match the instance.<br><br>    `public_ip` - The public IP address assigned to the instance, if applicable. NOTE: If you are using an aws\_eip with your instance, you should refer to the EIP's address directly and not use `public_ip` as this field will change after the EIP is attached.<br>    `private_ip` - The private IP address assigned to the instance.<br>    `secondary_private_ips` - A list of secondary private IPv4 addresses assigned to the instance's primary network interface.<br><br>    `public_domain` - The public DNS name assigned to the instance. For EC2-VPC, this is only available if you've enabled DNS hostnames for your VPC.<br>    `private_domain` - The private DNS name assigned to the instance. Can only be used inside the Amazon EC2, and only available if you've enabled DNS hostnames for your VPC.<br>    `hostname_type` - The type of hostname for the EC2 instances.<br>    `dns_resource_name_ipv4_enabled` - Whether to resolve the IPv4 address of the EC2 instance for requests to your resource-name based domain.<br>    `dns_resource_name_ipv6_enabled` - Whether to resolve the IPv6 address of the EC2 instance for requests to your resource-name based domain. |
 | <a name="output_ssh_key"></a> [ssh\_key](#output\_ssh\_key) | The name of the SSH Key to access the instance. |
-| <a name="output_state"></a> [state](#output\_state) | The state of the instance. One of: `pending`, `running`, `shutting-down`, `terminated`, `stopping`, `stopped`. |
+| <a name="output_state"></a> [state](#output\_state) | The state of the instance. One of: `PENDING`, `RUNNING`, `STOPPING`, `STOPPED`, `SHUTTING_DOWN`, `TERMINATED`. |
 | <a name="output_storage"></a> [storage](#output\_storage) | The configuration of storage for the instance. |
 | <a name="output_type"></a> [type](#output\_type) | The instance type to use for the instance. |
 | <a name="output_user_data"></a> [user\_data](#output\_user\_data) | The configuration for user-data of the instance. |
