@@ -2,6 +2,10 @@ locals {
   instance = try(aws_instance.this[0], aws_spot_instance_request.this[0])
 }
 
+data "aws_instance" "this" {
+  instance_id = aws_ec2_instance_state.this.instance_id
+}
+
 # TODO: check for spot instance id
 output "id" {
   description = "The ID of the instance."
@@ -18,10 +22,12 @@ output "name" {
   value       = var.name
 }
 
-# TODO: Capitalize
 output "state" {
-  description = "The state of the instance. One of: `pending`, `running`, `shutting-down`, `terminated`, `stopping`, `stopped`."
-  value       = local.instance.instance_state
+  description = "The state of the instance. One of: `PENDING`, `RUNNING`, `STOPPING`, `STOPPED`, `SHUTTING_DOWN`, `TERMINATED`."
+  value = {
+    for k, v in local.instance_state :
+    v => k
+  }[data.aws_instance.this.instance_state]
 }
 
 output "type" {

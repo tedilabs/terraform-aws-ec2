@@ -4,6 +4,18 @@ variable "name" {
   nullable    = false
 }
 
+variable "state" {
+  description = "(Optional) The state of the instance. Valid values are `RUNNING`, `STOPPED` or `FORCED_STOP`."
+  type        = string
+  default     = "RUNNING"
+  nullable    = false
+
+  validation {
+    condition     = contains(["RUNNING", "STOPPED", "FORCED_STOP"], var.state)
+    error_message = "Valid values are `RUNNING`, `STOPPED` or `FORCED_STOP`."
+  }
+}
+
 variable "type" {
   description = "(Optional) The instance type to use for the instance. Updates to this field will trigger a stop/start of the EC2 instance."
   type        = string

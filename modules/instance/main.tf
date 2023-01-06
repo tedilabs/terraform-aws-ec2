@@ -20,6 +20,14 @@ locals {
     "IP_V4"         = "ip-name"
     "RESOURCE_NAME" = "resource-name"
   }
+  instance_state = {
+    "PENDING"       = "pending"
+    "RUNNING"       = "running"
+    "STOPPING"      = "stopping"
+    "STOPPED"       = "stopped"
+    "SHUTTING_DOWN" = "shutting-down"
+    "TERMINATED"    = "terminated"
+  }
 }
 
 
@@ -355,6 +363,17 @@ resource "aws_spot_instance_request" "this" {
     local.module_tags,
     var.tags,
   )
+}
+
+
+###################################################
+# EC2 Instance State
+###################################################
+
+resource "aws_ec2_instance_state" "this" {
+  instance_id = try(aws_instance.this[0].id, aws_spot_instance_request.this[0].id)
+  state       = var.state == "RUNNING" ? "running" : "stopped"
+  force       = var.state == "FORCED_STOP"
 }
 
 
