@@ -4,7 +4,7 @@
 
 module "instance_profile" {
   source  = "tedilabs/account/aws//modules/iam-role"
-  version = "~> 0.22.0"
+  version = "~> 0.29.1"
 
   count = try(var.instance_profile.enabled, true) ? 1 : 0
 
