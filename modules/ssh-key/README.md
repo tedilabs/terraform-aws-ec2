@@ -9,14 +9,14 @@ This module creates following resources.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.6 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.22 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.19.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.48.0 |
 
 ## Modules
 
@@ -35,7 +35,7 @@ This module creates following resources.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_name"></a> [name](#input\_name) | (Required) The name of the SSH key pair. | `string` | n/a | yes |
-| <a name="input_public_key"></a> [public\_key](#input\_public\_key) | (Optional) The public key material. | `string` | n/a | yes |
+| <a name="input_public_key"></a> [public\_key](#input\_public\_key) | (Required) The public key material. | `string` | n/a | yes |
 | <a name="input_module_tags_enabled"></a> [module\_tags\_enabled](#input\_module\_tags\_enabled) | (Optional) Whether to create AWS Resource Tags for the module informations. | `bool` | `true` | no |
 | <a name="input_resource_group_description"></a> [resource\_group\_description](#input\_resource\_group\_description) | (Optional) The description of Resource Group. | `string` | `"Managed by Terraform."` | no |
 | <a name="input_resource_group_enabled"></a> [resource\_group\_enabled](#input\_resource\_group\_enabled) | (Optional) Whether to create Resource Group to find and group AWS resources which are created by this module. | `bool` | `true` | no |
@@ -50,5 +50,6 @@ This module creates following resources.
 | <a name="output_fingerprint"></a> [fingerprint](#output\_fingerprint) | The MD5 public key fingerprint as specified in section 4 of RFC 4716. |
 | <a name="output_id"></a> [id](#output\_id) | The ID of the SSH key pair. |
 | <a name="output_name"></a> [name](#output\_name) | The name of the SSH key pair. |
+| <a name="output_public_key"></a> [public\_key](#output\_public\_key) | The public key material. |
 | <a name="output_type"></a> [type](#output\_type) | The type of the SSH key pair. |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

@@ -14,19 +14,13 @@ locals {
   } : {}
 }
 
-locals {
-  strategy = {
-    "CLUSTER"   = "cluster"
-    "PARTITION" = "partition"
-    "SPREAD"    = "spread"
-  }
-}
-
 
 ###################################################
 # SSH Key Pair for EC2 Instances
 ###################################################
 
+# INFO: Not supported attributes
+# - `key_name_prefix`
 resource "aws_key_pair" "this" {
   key_name   = var.name
   public_key = var.public_key

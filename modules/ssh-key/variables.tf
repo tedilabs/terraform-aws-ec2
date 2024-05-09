@@ -5,7 +5,7 @@ variable "name" {
 }
 
 variable "public_key" {
-  description = "(Optional) The public key material."
+  description = "(Required) The public key material."
   type        = string
   nullable    = false
 }
