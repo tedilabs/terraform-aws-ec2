@@ -52,9 +52,9 @@ resource "aws_instance" "this" {
   instance_type = var.type
   ami           = var.ami
   key_name      = var.ssh_key
-  iam_instance_profile = (try(var.instance_profile.enabled, true)
+  iam_instance_profile = (var.default_instance_profile.enabled
     ? module.instance_profile[0].name
-    : var.custom_instance_profile
+    : var.instance_profile
   )
 
   dynamic "launch_template" {
@@ -214,9 +214,9 @@ resource "aws_spot_instance_request" "this" {
   instance_type = var.type
   ami           = var.ami
   key_name      = var.ssh_key
-  iam_instance_profile = (try(var.instance_profile.enabled, true)
+  iam_instance_profile = (var.default_instance_profile.enabled
     ? module.instance_profile[0].name
-    : var.custom_instance_profile
+    : var.instance_profile
   )
 
   dynamic "launch_template" {

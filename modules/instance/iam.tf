@@ -3,23 +3,35 @@
 ###################################################
 
 module "instance_profile" {
+  count = var.default_instance_profile.enabled ? 1 : 0
+
   source  = "tedilabs/account/aws//modules/iam-role"
-  version = "~> 0.22.0"
+  version = "~> 0.29.0"
 
-  count = try(var.instance_profile.enabled, true) ? 1 : 0
+  name = coalesce(
+    var.default_instance_profile.name,
+    "ec2-${local.metadata.name}"
+  )
+  path        = var.default_instance_profile.path
+  description = var.default_instance_profile.description
 
-  name        = try(var.instance_profile.name, "ec2-${local.metadata.name}")
-  path        = try(var.instance_profile.path, "/")
-  description = try(var.instance_profile.description, "Instance Profile for EC2 Instance (${local.metadata.name}).")
+  trusted_service_policies = [
+    {
+      services = ["ec2.amazonaws.com"]
+    }
+  ]
 
-  trusted_services = ["ec2.amazonaws.com"]
+  policies = concat(
+    [],
+    var.default_instance_profile.policies,
+  )
+  inline_policies = var.default_instance_profile.inline_policies
 
-  assumable_roles = try(var.instance_profile.assumable_roles, [])
-  policies        = try(var.instance_profile.policies, [])
-  inline_policies = try(var.instance_profile.inline_policies, {})
+  instance_profile = {
+    enabled = true
+  }
 
-  instance_profile_enabled = true
-
+  force_detach_policies  = true
   resource_group_enabled = false
   module_tags_enabled    = false
 

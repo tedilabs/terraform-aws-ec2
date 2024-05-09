@@ -34,25 +34,34 @@ variable "ssh_key" {
   default     = null
 }
 
-variable "instance_profile" {
+variable "default_instance_profile" {
   description = <<EOF
-  (Optional) The configuration for the default instance profile of the instance. `instance_profile` block as defined below.
-    (Optional) `enabled` - Whether to trigger a destroy and recreate when user data is changed. Defaults to `false`.
-    (Optional) `name` - The name for the IAM role.
-    (Optional) `path` - The path for the IAM role.
-    (Optional) `description` - The description of the role.
-    (Optional) `assumable_roles` - List of IAM roles ARNs which can be assumed by the role.
-    (Optional) `policies` - List of IAM policies ARNs to attach to IAM role.
-    (Optional) `inline_policies` - Map of inline IAM policies to attach to IAM role. (`name` => `policy`).
+  (Optional) A configuration for the default instance profile of the instance. Use `instance_profile` if `default_instance_profile.enabled` is `false`. `default_instance_profile` block as defined below.
+    (Optional) `enabled` - Whether to create the default instance profile. Defaults to `true`.
+    (Optional) `name` - The name for the default instance profile. Defaults to `ec2-$${var.name}`.
+    (Optional) `path` - The path for the default instance profile.
+    (Optional) `description` - The description of the default instance profile.
+    (Optional) `policies` - A list of IAM policy ARNs to attach to the default instance profile.
+    (Optional) `inline_policies` - A map of inline IAM policies to attach to the default instance profile. (`name` => `policy`).
   EOF
-  type        = any
-  default     = null
+  type = object({
+    enabled     = optional(bool, true)
+    name        = optional(string)
+    path        = optional(string, "/")
+    description = optional(string, "Managed by Terraform.")
+
+    policies        = optional(list(string), [])
+    inline_policies = optional(map(string), {})
+  })
+  default  = {}
+  nullable = false
 }
 
-variable "custom_instance_profile" {
-  description = "(Optional) The IAM Instance Profile to replace the default instance profile which is managed by this module. Specified as the name of the Instance Profile. Ensure your credentials have the correct permission to assign the instance profile according to the EC2 documentation, notably `iam:PassRole`."
+variable "instance_profile" {
+  description = "(Optional) A name of the IAM Instance Profile to replace the default instance profile which is managed by this module."
   type        = string
   default     = null
+  nullable    = true
 }
 
 variable "availability_zone" {
