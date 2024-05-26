@@ -1,9 +1,20 @@
 # Modules
 ":floppy_disk: instance":
-- modules/instance/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - modules/instance/**/*
+
 ":floppy_disk: instance-group":
-- modules/instance-group/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - modules/instance-group/**/*
+
 ":floppy_disk: placement-group":
-- modules/placement-group/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - modules/placement-group/**/*
+
 ":floppy_disk: ssh-key":
-- modules/ssh-key/**/*
+- changed-files:
+  - any-glob-to-any-file:
+    - modules/ssh-key/**/*
