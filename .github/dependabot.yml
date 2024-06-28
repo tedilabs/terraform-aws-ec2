@@ -7,8 +7,6 @@ updates:
 
 - package-ecosystem: terraform
   directories:
-  - /modules/instance
-  - /modules/placement-group
-  - /modules/ssh-key
+  - /modules/*
   schedule:
     interval: weekly
