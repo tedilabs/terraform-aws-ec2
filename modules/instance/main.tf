@@ -72,8 +72,8 @@ resource "aws_instance" "this" {
 
   ## Network Configuration
   availability_zone      = var.availability_zone
-  subnet_id              = var.subnet_id
-  vpc_security_group_ids = var.security_groups
+  subnet_id              = var.subnet
+  vpc_security_group_ids = local.security_groups
   source_dest_check      = var.source_dest_check_enabled
 
   associate_public_ip_address = var.auto_assign_public_ip_enabled
@@ -234,8 +234,8 @@ resource "aws_spot_instance_request" "this" {
 
   ## Network Configuration
   availability_zone      = var.availability_zone
-  subnet_id              = var.subnet_id
-  vpc_security_group_ids = var.security_groups
+  subnet_id              = var.subnet
+  vpc_security_group_ids = local.security_groups
   source_dest_check      = var.source_dest_check_enabled
 
   associate_public_ip_address = var.auto_assign_public_ip_enabled

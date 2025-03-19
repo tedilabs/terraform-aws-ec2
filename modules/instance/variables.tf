@@ -70,16 +70,92 @@ variable "availability_zone" {
   default     = null
 }
 
-variable "subnet_id" {
+variable "subnet" {
   description = "(Optional) The ID of subnet in which to launch the instance."
   type        = string
   default     = null
 }
 
+variable "default_security_group" {
+  description = <<EOF
+  (Optional) The configuration of the default security group for the EC2 instance. `default_security_group` block as defined below.
+    (Optional) `enabled` - Whether to use the default security group. Defaults to `true`.
+    (Optional) `name` - The name of the default security group. If not provided, the instance name is used for the name of security group.
+    (Optional) `description` - The description of the default security group.
+    (Optional) `ingress_rules` - A list of ingress rules in a security group. Defaults to `[]`. Each block of `ingress_rules` as defined below.
+      (Optional) `id` - The ID of the ingress rule. This value is only used internally within Terraform code.
+      (Optional) `description` - The description of the rule.
+      (Required) `protocol` - The protocol to match. Note that if `protocol` is set to `-1`, it translates to all protocols, all port ranges, and `from_port` and `to_port` values should not be defined.
+      (Required) `from_port` - The start of port range for the protocols.
+      (Required) `to_port` - The end of port range for the protocols.
+      (Optional) `ipv4_cidrs` - The IPv4 network ranges to allow, in CIDR notation.
+      (Optional) `ipv6_cidrs` - The IPv6 network ranges to allow, in CIDR notation.
+      (Optional) `prefix_lists` - The prefix list IDs to allow.
+      (Optional) `security_groups` - The source security group IDs to allow.
+      (Optional) `self` - Whether the security group itself will be added as a source to this ingress rule.
+    (Optional) `egress_rules` - A list of egress rules in a security group. Defaults to `[{ id = "default", protocol = -1, from_port = 1, to_port=65535, ipv4_cidrs = ["0.0.0.0/0"] }]`. Each block of `egress_rules` as defined below.
+      (Optional) `id` - The ID of the egress rule. This value is only used internally within Terraform code.
+      (Optional) `description` - The description of the rule.
+      (Required) `protocol` - The protocol to match. Note that if `protocol` is set to `-1`, it translates to all protocols, all port ranges, and `from_port` and `to_port` values should not be defined.
+      (Required) `from_port` - The start of port range for the protocols.
+      (Required) `to_port` - The end of port range for the protocols.
+      (Optional) `ipv4_cidrs` - The IPv4 network ranges to allow, in CIDR notation.
+      (Optional) `ipv6_cidrs` - The IPv6 network ranges to allow, in CIDR notation.
+      (Optional) `prefix_lists` - The prefix list IDs to allow.
+      (Optional) `security_groups` - The source security group IDs to allow.
+      (Optional) `self` - Whether the security group itself will be added as a source to this ingress rule.
+  EOF
+  type = object({
+    enabled     = optional(bool, true)
+    name        = optional(string)
+    description = optional(string, "Managed by Terraform.")
+    ingress_rules = optional(
+      list(object({
+        id              = optional(string)
+        description     = optional(string, "Managed by Terraform.")
+        protocol        = string
+        from_port       = number
+        to_port         = number
+        ipv4_cidrs      = optional(list(string), [])
+        ipv6_cidrs      = optional(list(string), [])
+        prefix_lists    = optional(list(string), [])
+        security_groups = optional(list(string), [])
+        self            = optional(bool, false)
+      })),
+      []
+    )
+    egress_rules = optional(
+      list(object({
+        id              = string
+        description     = optional(string, "Managed by Terraform.")
+        protocol        = string
+        from_port       = number
+        to_port         = number
+        ipv4_cidrs      = optional(list(string), [])
+        ipv6_cidrs      = optional(list(string), [])
+        prefix_lists    = optional(list(string), [])
+        security_groups = optional(list(string), [])
+        self            = optional(bool, false)
+      })),
+      [{
+        id          = "default"
+        description = "Allow all outbound traffic."
+        protocol    = "-1"
+        from_port   = 1
+        to_port     = 65535
+        ipv4_cidrs  = ["0.0.0.0/0"]
+      }]
+    )
+  })
+  default  = {}
+  nullable = false
+}
+
 variable "security_groups" {
-  description = "(Optional) A set of security group IDs to assign to the instance."
-  type        = set(string)
+  description = "(Optional) A list of security group IDs to assign to the instance."
+  type        = list(string)
   default     = []
+  nullable    = false
 }
 
 variable "source_dest_check_enabled" {
