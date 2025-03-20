@@ -4,7 +4,7 @@ This module creates following resources.
 
 - `aws_key_pair`
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -52,4 +52,4 @@ This module creates following resources.
 | <a name="output_name"></a> [name](#output\_name) | The name of the SSH key pair. |
 | <a name="output_public_key"></a> [public\_key](#output\_public\_key) | The public key material. |
 | <a name="output_type"></a> [type](#output\_type) | The type of the SSH key pair. |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
