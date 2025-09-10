@@ -146,8 +146,8 @@ output "cpu" {
   EOF
   value = {
     options = {
-      core_count       = local.instance.cpu_core_count
-      threads_per_core = local.instance.cpu_threads_per_core
+      core_count       = one(local.instance.cpu_options[*].core_count)
+      threads_per_core = one(local.instance.cpu_options[*].threads_per_core)
     }
     credit_specification = try(upper(local.instance.credit_specification[0].cpu_credits), null)
   }

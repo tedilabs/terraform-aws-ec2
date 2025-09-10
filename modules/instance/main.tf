@@ -116,8 +116,10 @@ resource "aws_instance" "this" {
 
 
   ## CPU
-  cpu_core_count       = try(var.cpu_options.core_count, null)
-  cpu_threads_per_core = try(var.cpu_options.threads_per_core, null)
+  cpu_options {
+    core_count       = try(var.cpu_options.core_count, null)
+    threads_per_core = try(var.cpu_options.threads_per_core, null)
+  }
 
   credit_specification {
     cpu_credits = (local.is_t_type && (var.cpu_credit_specification != null)
@@ -277,8 +279,10 @@ resource "aws_spot_instance_request" "this" {
 
 
   ## CPU
-  cpu_core_count       = try(var.cpu_options.core_count, null)
-  cpu_threads_per_core = try(var.cpu_options.threads_per_core, null)
+  cpu_options {
+    core_count       = try(var.cpu_options.core_count, null)
+    threads_per_core = try(var.cpu_options.threads_per_core, null)
+  }
 
   credit_specification {
     cpu_credits = (local.is_t_type && (var.cpu_credit_specification != null)
