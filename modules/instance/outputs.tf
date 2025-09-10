@@ -236,3 +236,19 @@ output "zzz" {
     if !contains(["arn", "id", "availability_zone", "disable_api_stop", "disable_api_termination", "instance_state", "private_ip", "private_dns", "public_ip", "public_dns", "tags", "tags_all", "security_grouops", "cpu_core_count", "cpu_threads_per_core", "subnet_id", "timeouts", "credit_specification", "monitoring", "instance_initiated_shutdown_behavior", "maintenance_options", "placement_group", "placement_partition_number", "host_id", "tenancy", "key_name", "instance_type", "ami", "source_dest_check", "iam_instance_profile", "associate_public_ip_address", "ebs_optimized", "secondary_private_ips", "security_groups", "vpc_security_group_ids", "hibernation", "volume_tags", "enclave_options", "metadata_options", "launch_template", "private_dns_name_options", "root_block_device", "primary_network_interface_id", "ephemeral_block_device", "user_data_replace_on_change", "user_data", "user_data_base64"], k)
   }
 }
+
+output "resource_group" {
+  description = "The resource group created to manage resources in this module."
+  value = merge(
+    {
+      enabled = var.resource_group.enabled && var.module_tags_enabled
+    },
+    (var.resource_group.enabled && var.module_tags_enabled
+      ? {
+        arn  = module.resource_group[0].arn
+        name = module.resource_group[0].name
+      }
+      : {}
+    )
+  )
+}
