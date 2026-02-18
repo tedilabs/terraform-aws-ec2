@@ -1,3 +1,8 @@
+output "region" {
+  description = "The AWS region this module resources resides in."
+  value       = aws_key_pair.this.region
+}
+
 output "id" {
   description = "The ID of the SSH key pair."
   value       = aws_key_pair.this.key_pair_id
@@ -28,14 +33,6 @@ output "type" {
   value       = aws_key_pair.this.key_type
 }
 
-# output "debug" {
-#   value = {
-#     for k, v in aws_key_pair.this :
-#     k => v
-#     if !contains(["id", "key_name", "key_name_prefix", "arn", "key_pair_id", "fingerprint", "key_type", "public_key", "tags", "tags_all"], k)
-#   }
-# }
-
 output "resource_group" {
   description = "The resource group created to manage resources in this module."
   value = merge(
@@ -51,3 +48,11 @@ output "resource_group" {
     )
   )
 }
+
+# output "debug" {
+#   value = {
+#     for k, v in aws_key_pair.this :
+#     k => v
+#     if !contains(["id", "key_name", "key_name_prefix", "arn", "key_pair_id", "fingerprint", "key_type", "public_key", "tags", "tags_all"], k)
+#   }
+# }
