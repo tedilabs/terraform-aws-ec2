@@ -1,3 +1,8 @@
+output "region" {
+  description = "The AWS region this module resources resides in."
+  value       = aws_placement_group.this.region
+}
+
 output "id" {
   description = "The ID of the placement group."
   value       = aws_placement_group.this.placement_group_id

@@ -28,6 +28,8 @@ locals {
 ###################################################
 
 resource "aws_placement_group" "this" {
+  region = var.region
+
   name     = var.name
   strategy = local.strategy[var.strategy]
   partition_count = (var.strategy == "PARTITION"
