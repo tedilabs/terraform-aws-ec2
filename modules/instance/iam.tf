@@ -27,6 +27,8 @@ module "instance_profile" {
   )
   inline_policies = var.default_instance_profile.inline_policies
 
+  permissions_boundary = var.default_instance_profile.permissions_boundary
+
   instance_profile = {
     enabled = true
   }

@@ -50,6 +50,7 @@ variable "default_instance_profile" {
     (Optional) `description` - The description of the default instance profile.
     (Optional) `policies` - A list of IAM policy ARNs to attach to the default instance profile.
     (Optional) `inline_policies` - A map of inline IAM policies to attach to the default instance profile. (`name` => `policy`).
+    (Optional) `permissions_boundary` - The ARN of the IAM policy to use as permissions boundary for the default instance profile.
   EOF
   type = object({
     enabled     = optional(bool, true)
@@ -57,8 +58,9 @@ variable "default_instance_profile" {
     path        = optional(string, "/")
     description = optional(string, "Managed by Terraform.")
 
-    policies        = optional(list(string), [])
-    inline_policies = optional(map(string), {})
+    policies             = optional(list(string), [])
+    inline_policies      = optional(map(string), {})
+    permissions_boundary = optional(string)
   })
   default  = {}
   nullable = false
@@ -330,7 +332,7 @@ variable "root_volume" {
   description = <<EOF
   (Optional) The configuration for root volume (root block device) of the instance. `root_volume` block as defined below.
     (Optional) `type` - The type of volume to attach.
-    (Optional) `size` - The size of the volume, in GiB. If you are creating the volume from a snapshot, then the size of the volume can’t be smaller than the size of the snapshot.
+    (Optional) `size` - The size of the volume, in GiB. If you are creating the volume from a snapshot, then the size of the volume can't be smaller than the size of the snapshot.
     (Optional) `provisioned_iops` - The amount of provisioned IOPS. Only valid for type of `io1`, `io2` or `gp3`.
     (Optional) `provisioned_throughput` - Throughput to provision for a volume in mebibytes per second (MiB/s). This is only valid for type of `gp3`.
     (Optional) `encryption_enabled` - Whether to enable volume encryption. Defaults to `false`.
@@ -362,7 +364,7 @@ variable "shutdown_behavior" {
 }
 
 variable "stop_hibernation_enabled" {
-  description = "(Optional) Indicates whether to support hibernation stop for the instance. Hibernation stops your instance and saves the contents of the instance’s RAM to the root volume. You cannot enable hibernation after launch."
+  description = "(Optional) Indicates whether to support hibernation stop for the instance. Hibernation stops your instance and saves the contents of the instance's RAM to the root volume. You cannot enable hibernation after launch."
   type        = bool
   default     = null
 }
