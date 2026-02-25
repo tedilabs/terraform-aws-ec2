@@ -6,11 +6,11 @@ module "instance_profile" {
   count = var.default_instance_profile.enabled ? 1 : 0
 
   source  = "tedilabs/account/aws//modules/iam-role"
-  version = "~> 0.29.0"
+  version = "~> 0.32.0"
 
   name = coalesce(
     var.default_instance_profile.name,
-    "ec2-${local.metadata.name}"
+    "ec2-instance-${local.metadata.name}"
   )
   path        = var.default_instance_profile.path
   description = var.default_instance_profile.description
@@ -31,9 +31,11 @@ module "instance_profile" {
     enabled = true
   }
 
-  force_detach_policies  = true
-  resource_group_enabled = false
-  module_tags_enabled    = false
+  force_detach_policies = true
+  resource_group = {
+    enabled = false
+  }
+  module_tags_enabled = false
 
   tags = merge(
     local.module_tags,

@@ -6,6 +6,11 @@ data "aws_instance" "this" {
   instance_id = aws_ec2_instance_state.this.instance_id
 }
 
+output "region" {
+  description = "The AWS region this module resources resides in."
+  value       = local.instance.region
+}
+
 # TODO: check for spot instance id
 output "id" {
   description = "The ID of the instance."

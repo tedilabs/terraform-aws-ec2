@@ -1,3 +1,10 @@
+variable "region" {
+  description = "(Optional) The region in which to create the module resources. If not provided, the module resources will be created in the provider's configured region."
+  type        = string
+  default     = null
+  nullable    = true
+}
+
 variable "name" {
   description = "(Required) The name of the instance."
   type        = string
@@ -453,9 +460,6 @@ variable "module_tags_enabled" {
 ###################################################
 # Resource Group
 ###################################################
-
-
-
 
 variable "resource_group" {
   description = <<EOF

@@ -49,6 +49,8 @@ locals {
 resource "aws_instance" "this" {
   count = var.spot_enabled ? 0 : 1
 
+  region = var.region
+
   instance_type = var.type
   ami           = var.ami
   key_name      = var.ssh_key
@@ -213,6 +215,8 @@ resource "aws_instance" "this" {
 resource "aws_spot_instance_request" "this" {
   count = var.spot_enabled ? 1 : 0
 
+  region = var.region
+
   instance_type = var.type
   ami           = var.ami
   key_name      = var.ssh_key
@@ -375,6 +379,8 @@ resource "aws_spot_instance_request" "this" {
 ###################################################
 
 resource "aws_ec2_instance_state" "this" {
+  region = var.region
+
   instance_id = try(aws_instance.this[0].id, aws_spot_instance_request.this[0].id)
   state       = var.state == "RUNNING" ? "running" : "stopped"
   force       = var.state == "FORCED_STOP"
@@ -388,6 +394,8 @@ resource "aws_ec2_instance_state" "this" {
 # TODO: Support all properties
 resource "aws_ami_from_instance" "this" {
   for_each = var.ami_snapshots
+
+  region = var.region
 
   name               = each.key
   description        = "Managed by Terraform."

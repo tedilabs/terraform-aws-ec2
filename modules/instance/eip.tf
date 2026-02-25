@@ -9,6 +9,8 @@ resource "aws_eip_association" "this" {
     association.eip => association
   }
 
+  region = var.region
+
   allocation_id = each.key
 
   network_interface_id = (var.spot_enabled
@@ -16,4 +18,6 @@ resource "aws_eip_association" "this" {
     : aws_instance.this[0].primary_network_interface_id
   )
   private_ip_address = try(each.value.private_ip, null)
+
+  allow_reassociation = true
 }
