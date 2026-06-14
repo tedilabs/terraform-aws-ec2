@@ -1,20 +1,18 @@
-data "aws_vpc" "default" {
-  count = var.subnet == null ? 1 : 0
-
-  default = true
-}
-
 data "aws_subnet" "this" {
-  count = var.subnet != null ? 1 : 0
+  count = var.default_security_group.enabled ? 1 : 0
 
   id = var.subnet
+
+  lifecycle {
+    precondition {
+      condition     = var.subnet != null
+      error_message = "`subnet` is required when `default_security_group.enabled` is `true`, because the security group is created in the subnet's VPC. The default VPC is not supported."
+    }
+  }
 }
 
 locals {
-  vpc_id = (var.subnet != null
-    ? data.aws_subnet.this[0].vpc_id
-    : data.aws_vpc.default[0].id
-  )
+  vpc_id = var.default_security_group.enabled ? data.aws_subnet.this[0].vpc_id : null
 
   security_groups = (var.default_security_group.enabled
     ? concat(module.security_group[*].id, var.security_groups)
