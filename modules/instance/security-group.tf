@@ -12,11 +12,6 @@ data "aws_subnet" "this" {
 }
 
 locals {
-  ## NOTE: `vpc_id` is a ForceNew attribute of the security group. When the
-  ## caller attaches a module-level `depends_on` with pending changes, the
-  ## subnet data source is deferred to apply time and the derived VPC ID
-  ## becomes unknown - force-replacing the security group on every plan.
-  ## Passing `vpc_id` explicitly avoids the lookup entirely.
   vpc_id = (var.default_security_group.enabled
     ? coalesce(var.vpc_id, one(data.aws_subnet.this[*].vpc_id))
     : null
