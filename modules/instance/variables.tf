@@ -85,6 +85,13 @@ variable "subnet" {
   default     = null
 }
 
+variable "vpc_id" {
+  description = "(Optional) The ID of the VPC in which the default security group is created. If not provided, it is looked up from `subnet` via a data source. Provide it explicitly when the module has a `depends_on` with pending changes - a deferred lookup makes the VPC ID unknown at plan time and force-replaces the security group."
+  type        = string
+  default     = null
+  nullable    = true
+}
+
 variable "default_security_group" {
   description = <<EOF
   (Optional) The configuration of the default security group for the EC2 instance. `default_security_group` block as defined below.
