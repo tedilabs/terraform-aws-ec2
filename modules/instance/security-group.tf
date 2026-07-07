@@ -1,5 +1,5 @@
 data "aws_subnet" "this" {
-  count = var.default_security_group.enabled ? 1 : 0
+  count = var.default_security_group.enabled && var.vpc_id == null ? 1 : 0
 
   id = var.subnet
 
@@ -12,7 +12,10 @@ data "aws_subnet" "this" {
 }
 
 locals {
-  vpc_id = var.default_security_group.enabled ? data.aws_subnet.this[0].vpc_id : null
+  vpc_id = (var.default_security_group.enabled
+    ? coalesce(var.vpc_id, one(data.aws_subnet.this[*].vpc_id))
+    : null
+  )
 
   security_groups = (var.default_security_group.enabled
     ? concat(module.security_group[*].id, var.security_groups)
