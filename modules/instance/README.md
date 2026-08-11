@@ -31,9 +31,9 @@ This module creates following resources.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_instance_profile"></a> [instance\_profile](#module\_instance\_profile) | tedilabs/account/aws//modules/iam-role | ~> 0.32.0 |
+| <a name="module_instance_profile"></a> [instance\_profile](#module\_instance\_profile) | tedilabs/account/aws//modules/iam-role | ~> 0.33.0 |
 | <a name="module_resource_group"></a> [resource\_group](#module\_resource\_group) | tedilabs/misc/aws//modules/resource-group | ~> 0.12.0 |
-| <a name="module_security_group"></a> [security\_group](#module\_security\_group) | tedilabs/network/aws//modules/security-group | ~> 1.0.0 |
+| <a name="module_security_group"></a> [security\_group](#module\_security\_group) | tedilabs/network/aws//modules/security-group | ~> 1.2.0 |
 
 ## Resources
 
