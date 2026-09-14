@@ -4,11 +4,6 @@
   - any-glob-to-any-file:
     - modules/instance/**/*
 
-":floppy_disk: instance-group":
-- changed-files:
-  - any-glob-to-any-file:
-    - modules/instance-group/**/*
-
 ":floppy_disk: placement-group":
 - changed-files:
   - any-glob-to-any-file:
