@@ -17,6 +17,8 @@ Terraform Modules from [this package](https://github.com/tedilabs/terraform-aws-
   - Placement Group
   - SSH Key Pair
   - Auto Scaling Group (comming sooon!)
+- **Amazon EBS (Elastic Block Store)**
+  - Recycle Bin Retention Rule
 
 
 ## Self Promotion
