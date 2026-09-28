@@ -97,6 +97,17 @@ variable "lock" {
   }
 }
 
+variable "timeouts" {
+  description = "(Optional) How long to wait for the retention rule to be created/updated/deleted."
+  type = object({
+    create = optional(string, "30m")
+    update = optional(string, "30m")
+    delete = optional(string, "30m")
+  })
+  default  = {}
+  nullable = false
+}
+
 variable "tags" {
   description = "(Optional) A map of tags to add to all resources."
   type        = map(string)

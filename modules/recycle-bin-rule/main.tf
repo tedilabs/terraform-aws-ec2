@@ -62,6 +62,12 @@ resource "aws_rbin_rule" "this" {
     }
   }
 
+  timeouts {
+    create = var.timeouts.create
+    update = var.timeouts.update
+    delete = var.timeouts.delete
+  }
+
   tags = merge(
     {
       "Name" = local.metadata.name
