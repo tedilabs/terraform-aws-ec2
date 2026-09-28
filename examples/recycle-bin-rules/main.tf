@@ -7,7 +7,7 @@ provider "aws" {
 # Recycle Bin Retention Rules
 ###################################################
 
-# Region-level retention rule for all AMIs in the region.
+# Retain all AMIs in the region. (`EXCLUSION` mode without tags by default)
 module "image" {
   source = "../../modules/recycle-bin-rule"
   # source  = "tedilabs/ec2/aws//modules/recycle-bin-rule"
@@ -31,7 +31,7 @@ module "image" {
   }
 }
 
-# Region-level retention rule for snapshots, except temporary ones.
+# Retain all snapshots in the region, except temporary ones. (`EXCLUSION` mode)
 module "snapshot" {
   source = "../../modules/recycle-bin-rule"
   # source  = "tedilabs/ec2/aws//modules/recycle-bin-rule"
@@ -43,8 +43,11 @@ module "snapshot" {
 
   retention_period = 7
 
-  exclude_resource_tags = {
-    "Temp" = "true"
+  filter = {
+    mode = "EXCLUSION"
+    resource_tags = {
+      "Temp" = "true"
+    }
   }
 
   tags = {
@@ -52,7 +55,7 @@ module "snapshot" {
   }
 }
 
-# Tag-level retention rule for critical volumes only.
+# Retain critical volumes only. (`INCLUSION` mode)
 module "volume" {
   source = "../../modules/recycle-bin-rule"
   # source  = "tedilabs/ec2/aws//modules/recycle-bin-rule"
@@ -64,8 +67,11 @@ module "volume" {
 
   retention_period = 3
 
-  resource_tags = {
-    "Critical" = "true"
+  filter = {
+    mode = "INCLUSION"
+    resource_tags = {
+      "Critical" = "true"
+    }
   }
 
   tags = {

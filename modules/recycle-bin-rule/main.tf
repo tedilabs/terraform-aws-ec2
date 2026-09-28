@@ -31,9 +31,9 @@ resource "aws_rbin_rule" "this" {
     retention_period_unit  = "DAYS"
   }
 
-  # Tag-level retention rule
+  # INCLUSION mode
   dynamic "resource_tags" {
-    for_each = var.resource_tags
+    for_each = var.filter.mode == "INCLUSION" ? var.filter.resource_tags : {}
 
     content {
       resource_tag_key   = resource_tags.key
@@ -41,9 +41,9 @@ resource "aws_rbin_rule" "this" {
     }
   }
 
-  # Region-level retention rule
+  # EXCLUSION mode
   dynamic "exclude_resource_tags" {
-    for_each = var.exclude_resource_tags
+    for_each = var.filter.mode == "EXCLUSION" ? var.filter.resource_tags : {}
 
     content {
       resource_tag_key   = exclude_resource_tags.key

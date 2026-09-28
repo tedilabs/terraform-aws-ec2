@@ -43,38 +43,39 @@ variable "retention_period" {
   }
 }
 
-variable "resource_tags" {
-  description = "(Optional) A map of resource tags to identify the resources to retain. A resource that has any of these tags is retained. If provided, the rule is a tag-level retention rule. Otherwise, the rule is a Region-level retention rule."
-  type        = map(string)
-  default     = {}
-  nullable    = false
+variable "filter" {
+  description = <<EOF
+  (Optional) The configuration to filter the resources to retain by resource tags. `filter` as defined below.
+    (Optional) `mode` - The mode to filter the resources. Valid values are `INCLUSION` and `EXCLUSION`. Defaults to `EXCLUSION`.
+      `INCLUSION` - Retain only the resources that have any of `resource_tags`.
+      `EXCLUSION` - Retain all resources in the Region, except the resources that have any of `resource_tags`.
+    (Optional) `resource_tags` - A map of resource tags to include or exclude, according to `mode`. Required at least one tag for `INCLUSION` mode. Defaults to `{}`.
+  EOF
+  type = object({
+    mode          = optional(string, "EXCLUSION")
+    resource_tags = optional(map(string), {})
+  })
+  default  = {}
+  nullable = false
 
   validation {
-    condition     = length(var.resource_tags) <= 50
-    error_message = "`resource_tags` can have up to 50 tags."
-  }
-}
-
-variable "exclude_resource_tags" {
-  description = "(Optional) A map of resource tags to exclude from a Region-level retention rule. A resource that has any of these tags is not retained. Cannot be used with `resource_tags`."
-  type        = map(string)
-  default     = {}
-  nullable    = false
-
-  validation {
-    condition     = length(var.exclude_resource_tags) <= 50
-    error_message = "`exclude_resource_tags` can have up to 50 tags."
+    condition     = contains(["INCLUSION", "EXCLUSION"], var.filter.mode)
+    error_message = "Valid values for `filter.mode` are `INCLUSION` and `EXCLUSION`."
   }
   validation {
-    condition     = length(var.exclude_resource_tags) == 0 || length(var.resource_tags) == 0
-    error_message = "`exclude_resource_tags` can only be used with a Region-level retention rule (empty `resource_tags`)."
+    condition     = var.filter.mode != "INCLUSION" || length(var.filter.resource_tags) > 0
+    error_message = "`filter.resource_tags` requires at least one tag for `INCLUSION` mode."
+  }
+  validation {
+    condition     = length(var.filter.resource_tags) <= 50
+    error_message = "`filter.resource_tags` can have up to 50 tags."
   }
 }
 
 variable "lock" {
   description = <<EOF
   (Optional) The configuration of the retention rule lock. A locked rule can't be modified or deleted until it is unlocked and the unlock delay expires. `lock` as defined below.
-    (Optional) `enabled` - Whether to lock the retention rule. Only a Region-level retention rule without `exclude_resource_tags` can be locked. Defaults to `false`.
+    (Optional) `enabled` - Whether to lock the retention rule. Only a rule in `EXCLUSION` mode with empty `filter.resource_tags` can be locked. Defaults to `false`.
     (Optional) `unlock_delay` - The number of days to wait after the rule is unlocked before it can be modified or deleted. Valid values are from `7` to `30`. Defaults to `7`.
   EOF
   type = object({
@@ -90,9 +91,9 @@ variable "lock" {
   }
   validation {
     condition = !var.lock.enabled || (
-      length(var.resource_tags) == 0 && length(var.exclude_resource_tags) == 0
+      var.filter.mode == "EXCLUSION" && length(var.filter.resource_tags) == 0
     )
-    error_message = "Only a Region-level retention rule without `exclude_resource_tags` can be locked."
+    error_message = "Only a rule in `EXCLUSION` mode with empty `filter.resource_tags` can be locked."
   }
 }
 

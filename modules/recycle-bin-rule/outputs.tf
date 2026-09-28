@@ -23,11 +23,6 @@ output "description" {
   value       = aws_rbin_rule.this.description
 }
 
-output "type" {
-  description = "The type of the retention rule. `TAG` for a tag-level retention rule, `REGION` for a Region-level retention rule."
-  value       = length(var.resource_tags) > 0 ? "TAG" : "REGION"
-}
-
 output "resource_type" {
   description = "The resource type retained by the retention rule."
   value       = aws_rbin_rule.this.resource_type
@@ -38,14 +33,25 @@ output "retention_period" {
   value       = one(aws_rbin_rule.this.retention_period[*].retention_period_value)
 }
 
-output "resource_tags" {
-  description = "A map of resource tags to identify the resources to retain by the tag-level retention rule."
-  value       = var.resource_tags
-}
-
-output "exclude_resource_tags" {
-  description = "A map of resource tags to exclude from the Region-level retention rule."
-  value       = var.exclude_resource_tags
+output "filter" {
+  description = <<EOF
+  The configuration to filter the resources to retain by resource tags.
+    `mode` - The mode to filter the resources. `INCLUSION` or `EXCLUSION`.
+    `resource_tags` - A map of resource tags to include or exclude, according to `mode`.
+  EOF
+  value = {
+    mode = var.filter.mode
+    resource_tags = (var.filter.mode == "INCLUSION"
+      ? {
+        for tag in aws_rbin_rule.this.resource_tags :
+        tag.resource_tag_key => tag.resource_tag_value
+      }
+      : {
+        for tag in aws_rbin_rule.this.exclude_resource_tags :
+        tag.resource_tag_key => tag.resource_tag_value
+      }
+    )
+  }
 }
 
 output "lock" {
