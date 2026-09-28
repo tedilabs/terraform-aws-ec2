@@ -9,6 +9,11 @@
   - any-glob-to-any-file:
     - modules/placement-group/**/*
 
+":floppy_disk: recycle-bin-rule":
+- changed-files:
+  - any-glob-to-any-file:
+    - modules/recycle-bin-rule/**/*
+
 ":floppy_disk: ssh-key":
 - changed-files:
   - any-glob-to-any-file:
