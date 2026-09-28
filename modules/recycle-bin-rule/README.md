@@ -51,15 +51,14 @@ This module creates following resources.
 | Name | Description |
 | ---- | ----------- |
 | <a name="output_arn"></a> [arn](#output\_arn) | The Amazon Resource Name (ARN) of the retention rule. |
-| <a name="output_debug"></a> [debug](#output\_debug) | n/a |
 | <a name="output_description"></a> [description](#output\_description) | The description of the retention rule. |
 | <a name="output_filter"></a> [filter](#output\_filter) | The configuration to filter the resources to retain by resource tags.<br/>    `mode` - The mode to filter the resources. `INCLUSION` or `EXCLUSION`.<br/>    `resource_tags` - A map of resource tags to include or exclude, according to `mode`. |
 | <a name="output_id"></a> [id](#output\_id) | The ID of the retention rule. |
-| <a name="output_lock"></a> [lock](#output\_lock) | The lock configuration of the retention rule.<br/>    `enabled` - Whether the retention rule is locked.<br/>    `unlock_delay` - The number of days to wait after the rule is unlocked before it can be modified or deleted.<br/>    `state` - The lock state of the retention rule. `locked`, `pending_unlock` or `unlocked`.<br/>    `end_time` - The date and time at which the unlock delay expires. Only returned for a rule within the unlock delay period. |
+| <a name="output_lock"></a> [lock](#output\_lock) | The lock configuration of the retention rule.<br/>    `enabled` - Whether the retention rule is locked.<br/>    `unlock_delay` - The number of days to wait after the rule is unlocked before it can be modified or deleted. |
 | <a name="output_name"></a> [name](#output\_name) | The name of the retention rule. |
 | <a name="output_region"></a> [region](#output\_region) | The AWS region this module resources resides in. |
 | <a name="output_resource_group"></a> [resource\_group](#output\_resource\_group) | The resource group created to manage resources in this module. |
 | <a name="output_resource_type"></a> [resource\_type](#output\_resource\_type) | The resource type retained by the retention rule. |
 | <a name="output_retention_period"></a> [retention\_period](#output\_retention\_period) | The number of days to retain deleted resources in the Recycle Bin. |
-| <a name="output_status"></a> [status](#output\_status) | The state of the retention rule. Only retention rules in the `available` state retain resources. |
+| <a name="output_status"></a> [status](#output\_status) | The state of the retention rule. Only retention rules in the `AVAILABLE` state retain resources. |
 <!-- END_TF_DOCS -->
