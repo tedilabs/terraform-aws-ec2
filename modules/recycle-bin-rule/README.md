@@ -51,6 +51,7 @@ This module creates following resources.
 | Name | Description |
 | ---- | ----------- |
 | <a name="output_arn"></a> [arn](#output\_arn) | The Amazon Resource Name (ARN) of the retention rule. |
+| <a name="output_debug"></a> [debug](#output\_debug) | n/a |
 | <a name="output_description"></a> [description](#output\_description) | The description of the retention rule. |
 | <a name="output_filter"></a> [filter](#output\_filter) | The configuration to filter the resources to retain by resource tags.<br/>    `mode` - The mode to filter the resources. `INCLUSION` or `EXCLUSION`.<br/>    `resource_tags` - A map of resource tags to include or exclude, according to `mode`. |
 | <a name="output_id"></a> [id](#output\_id) | The ID of the retention rule. |

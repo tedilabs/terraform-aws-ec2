@@ -23,6 +23,11 @@ output "description" {
   value       = aws_rbin_rule.this.description
 }
 
+output "status" {
+  description = "The state of the retention rule. Only retention rules in the `AVAILABLE` state retain resources."
+  value       = upper(aws_rbin_rule.this.status)
+}
+
 output "resource_type" {
   description = "The resource type retained by the retention rule."
   value       = aws_rbin_rule.this.resource_type
@@ -59,20 +64,14 @@ output "lock" {
   The lock configuration of the retention rule.
     `enabled` - Whether the retention rule is locked.
     `unlock_delay` - The number of days to wait after the rule is unlocked before it can be modified or deleted.
-    `state` - The lock state of the retention rule. `locked`, `pending_unlock` or `unlocked`.
-    `end_time` - The date and time at which the unlock delay expires. Only returned for a rule within the unlock delay period.
   EOF
   value = {
-    enabled      = var.lock.enabled
-    unlock_delay = var.lock.enabled ? var.lock.unlock_delay : null
-    state        = aws_rbin_rule.this.lock_state
-    end_time     = aws_rbin_rule.this.lock_end_time
+    enabled = length(aws_rbin_rule.this.lock_configuration) > 0
+    unlock_delay = (length(aws_rbin_rule.this.lock_configuration) > 0
+      ? one(aws_rbin_rule.this.lock_configuration[0].unlock_delay[*].unlock_delay_value)
+      : null
+    )
   }
-}
-
-output "status" {
-  description = "The state of the retention rule. Only retention rules in the `available` state retain resources."
-  value       = aws_rbin_rule.this.status
 }
 
 output "resource_group" {
@@ -90,3 +89,11 @@ output "resource_group" {
     )
   )
 }
+
+# output "debug" {
+#   value = {
+#     for k, v in aws_rbin_rule.this :
+#     k => v
+#     if !contains(["region", "id", "arn", "description", "resource_type", "resource_tags", "tags", "tags_all", "timeouts", "retention_period", "exclude_resource_tags", "status", "", "lock_end_time", "lock_state", "lock_configuration"], k)
+#   }
+# }
