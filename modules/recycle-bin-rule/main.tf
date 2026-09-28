@@ -20,7 +20,6 @@ locals {
 ###################################################
 
 # INFO: A retention rule has no name attribute. `name` is kept as the `Name` tag.
-# INFO: The retention period and the unlock delay are always measured in `DAYS`.
 resource "aws_rbin_rule" "this" {
   region = var.region
 

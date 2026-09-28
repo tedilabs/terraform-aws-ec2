@@ -16,11 +16,6 @@ variable "description" {
   type        = string
   default     = "Managed by Terraform."
   nullable    = false
-
-  validation {
-    condition     = length(var.description) <= 500
-    error_message = "`description` must be 500 characters or less."
-  }
 }
 
 variable "resource_type" {
@@ -40,8 +35,11 @@ variable "retention_period" {
   nullable    = false
 
   validation {
-    condition     = var.retention_period >= 1 && var.retention_period <= (var.resource_type == "EBS_VOLUME" ? 7 : 365)
-    error_message = "`retention_period` must be between 1 and 365 days, or between 1 and 7 days for `EBS_VOLUME`."
+    condition = anytrue([
+      var.resource_type == "EBS_VOLUME" && (var.retention_period >= 1 && var.retention_period <= 7),
+      contains(["EBS_SNAPSHOT", "EC2_IMAGE"], var.resource_type) && (var.retention_period >= 1 && var.retention_period <= 365),
+    ])
+    error_message = "`retention_period` must be between 1 and 7 days for `EBS_VOLUME`, and between 1 and 365 days for `EBS_SNAPSHOT` and `EC2_IMAGE`."
   }
 }
 
