@@ -10,5 +10,9 @@ terraform {
       source  = "hashicorp/cloudinit"
       version = ">= 2.3"
     }
+    telemetry = {
+      source  = "tedilabs/telemetry"
+      version = ">= 0.1.1"
+    }
   }
 }
