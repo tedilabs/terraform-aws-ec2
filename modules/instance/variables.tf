@@ -48,6 +48,7 @@ variable "default_instance_profile" {
     (Optional) `name` - The name for the default instance profile. Defaults to `ec2-$${var.name}`.
     (Optional) `path` - The path for the default instance profile.
     (Optional) `description` - The description of the default instance profile.
+    (Optional) `assumable_roles` - A set of IAM role ARNs that can be assumed by this role. Defaults to `[]`.
     (Optional) `policies` - A list of IAM policy ARNs to attach to the default instance profile.
     (Optional) `inline_policies` - A map of inline IAM policies to attach to the default instance profile. (`name` => `policy`).
     (Optional) `permissions_boundary` - The ARN of the IAM policy to use as permissions boundary for the default instance profile.
@@ -58,6 +59,7 @@ variable "default_instance_profile" {
     path        = optional(string, "/")
     description = optional(string, "Managed by Terraform.")
 
+    assumable_roles      = optional(set(string), [])
     policies             = optional(list(string), [])
     inline_policies      = optional(map(string), {})
     permissions_boundary = optional(string)

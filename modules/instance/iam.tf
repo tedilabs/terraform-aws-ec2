@@ -21,6 +21,8 @@ module "instance_profile" {
     }
   ]
 
+  assumable_roles = var.default_instance_profile.assumable_roles
+
   policies = concat(
     [],
     var.default_instance_profile.policies,
