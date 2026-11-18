@@ -278,12 +278,23 @@ variable "metadata_options" {
   description = <<EOF
   (Optional) The configuration for metadata of the instance. `metadata_options` block as defined below.
     (Optional) `http_enabled` - Whether the metadata service is available. You can turn off access to your instance metadata by disabling the HTTP endpoint of the instance metadata service. Defaults to `true`.
-    (Optional) `http_token_required` - Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2 (IMDSv2). Defaults to `false`.
+    (Optional) `http_token_required` - Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2 (IMDSv2). Defaults to `true`.
     (Optional) `http_put_response_hop_limit` - A desired HTTP PUT response hop limit for instance metadata requests. The larger the number, the further instance metadata requests can travel. Valid values are integer from `1` to `64`. Defaults to `1`.
     (Optional) `instance_tags_enabled` - Whether to enable the access to instance tags from the instance metadata service. Defaults to `false`.
   EOF
   type        = any
   default     = null
+
+  validation {
+    condition = (var.metadata_options != null
+      ? alltrue([
+        for key in keys(var.metadata_options) :
+        contains(["http_enabled", "http_token_required", "http_put_response_hop_limit", "instance_tags_enabled"], key)
+      ])
+      : true
+    )
+    error_message = "Valid keys for `metadata_options` are `http_enabled`, `http_token_required`, `http_put_response_hop_limit` and `instance_tags_enabled`."
+  }
 }
 
 # INFO: This option is only supported on creation of instance type that support CPU Options

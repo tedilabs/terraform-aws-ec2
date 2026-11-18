@@ -109,7 +109,7 @@ resource "aws_instance" "this" {
 
     content {
       http_endpoint               = try(metadata.value.http_enabled, true) ? "enabled" : "disabled"
-      http_tokens                 = try(metadata.value.http_token_required, false) ? "required" : "optional"
+      http_tokens                 = try(metadata.value.http_token_required, true) ? "required" : "optional"
       http_put_response_hop_limit = try(metadata.value.http_put_response_hop_limit, 1)
 
       instance_metadata_tags = try(metadata.value.instance_tags_enabled, false) ? "enabled" : "disabled"
@@ -274,7 +274,7 @@ resource "aws_spot_instance_request" "this" {
 
     content {
       http_endpoint               = try(metadata.value.http_enabled, true) ? "enabled" : "disabled"
-      http_tokens                 = try(metadata.value.http_token_required, false) ? "required" : "optional"
+      http_tokens                 = try(metadata.value.http_token_required, true) ? "required" : "optional"
       http_put_response_hop_limit = try(metadata.value.http_put_response_hop_limit, 1)
 
       instance_metadata_tags = try(metadata.value.instance_tags_enabled, false) ? "enabled" : "disabled"
