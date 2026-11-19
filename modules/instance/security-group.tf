@@ -17,10 +17,7 @@ locals {
     : null
   )
 
-  security_groups = (var.default_security_group.enabled
-    ? concat(module.security_group[*].id, var.security_groups)
-    : var.security_groups
-  )
+  security_groups = concat(module.security_group[*].id, var.security_groups)
 }
 
 
