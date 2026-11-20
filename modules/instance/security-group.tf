@@ -1,6 +1,8 @@
 data "aws_subnet" "this" {
   count = var.default_security_group.enabled && var.vpc_id == null ? 1 : 0
 
+  region = var.region
+
   id = var.subnet
 
   lifecycle {
