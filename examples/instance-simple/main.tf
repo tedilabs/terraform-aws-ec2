@@ -32,6 +32,10 @@ module "instance" {
   type = "t2.micro"
   ami  = data.aws_ami.ubuntu.image_id
 
+  default_security_group = {
+    enabled = false
+  }
+
   tags = {
     "project" = "terraform-aws-ec2-examples"
   }
