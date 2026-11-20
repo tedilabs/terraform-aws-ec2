@@ -3,6 +3,8 @@ locals {
 }
 
 data "aws_instance" "this" {
+  region = var.region
+
   instance_id = aws_ec2_instance_state.this.instance_id
 }
 
