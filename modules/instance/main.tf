@@ -15,7 +15,7 @@ locals {
 }
 
 locals {
-  is_t_type = replace(var.type, "/^t(2|3|3a){1}\\..*$/", "1") == "1" ? true : false
+  is_t_type = replace(var.type, "/^t(2|3|3a|4g|8i|9g){1}\\..*$/", "1") == "1" ? true : false
   hostname_type = {
     "IP_V4"         = "ip-name"
     "RESOURCE_NAME" = "resource-name"
