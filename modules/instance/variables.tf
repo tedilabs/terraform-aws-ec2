@@ -313,7 +313,7 @@ variable "cpu_options" {
 }
 
 variable "cpu_credit_specification" {
-  description = "(Optional) The specification for CPU credit. A credit specification is only available for T2, T3, T3a, and T4g instances. Valid values are `STANDARD` or `UNLIMITED`. T3, T3a, and T4g instances are launched as `UNLIMITED` by default. T2 instances are launched as `STANDARD` by default."
+  description = "(Optional) The specification for CPU credit. A credit specification is only available for T2, T3, T3a, T4g, T8i, and T9g instances. Valid values are `STANDARD` or `UNLIMITED`. T3, T3a, T4g, T8i, and T9g instances are launched as `UNLIMITED` by default. T2 instances are launched as `STANDARD` by default."
   type        = string
   default     = null
 }
