@@ -11,10 +11,9 @@ output "region" {
   value       = local.instance.region
 }
 
-# TODO: check for spot instance id
 output "id" {
   description = "The ID of the instance."
-  value       = local.instance.id
+  value       = try(aws_instance.this[0].id, aws_spot_instance_request.this[0].spot_instance_id)
 }
 
 output "arn" {
