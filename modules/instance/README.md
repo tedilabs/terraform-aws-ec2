@@ -125,5 +125,4 @@ This module creates following resources.
 | <a name="output_storage"></a> [storage](#output\_storage) | The configuration of storage for the instance. |
 | <a name="output_type"></a> [type](#output\_type) | The instance type to use for the instance. |
 | <a name="output_user_data"></a> [user\_data](#output\_user\_data) | The configuration for user-data of the instance. |
-| <a name="output_zzz"></a> [zzz](#output\_zzz) | The configuration of rule groups associated with the firewall. |
 <!-- END_TF_DOCS -->
