@@ -220,6 +220,8 @@ resource "aws_spot_instance_request" "this" {
 
   region = var.region
 
+  wait_for_fulfillment = true
+
   instance_type = var.type
   ami           = var.ami
   key_name      = var.ssh_key
@@ -384,7 +386,7 @@ resource "aws_spot_instance_request" "this" {
 resource "aws_ec2_instance_state" "this" {
   region = var.region
 
-  instance_id = try(aws_instance.this[0].id, aws_spot_instance_request.this[0].id)
+  instance_id = try(aws_instance.this[0].id, aws_spot_instance_request.this[0].spot_instance_id)
   state       = var.state == "RUNNING" ? "running" : "stopped"
   force       = var.state == "FORCED_STOP"
 }
@@ -402,7 +404,7 @@ resource "aws_ami_from_instance" "this" {
 
   name               = each.key
   description        = "Managed by Terraform."
-  source_instance_id = try(aws_instance.this[0].id, aws_spot_instance_request.this[0].id)
+  source_instance_id = try(aws_instance.this[0].id, aws_spot_instance_request.this[0].spot_instance_id)
 
   snapshot_without_reboot = var.ami_snapshots_without_reboot_enabled
 
