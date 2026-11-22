@@ -303,7 +303,7 @@ variable "cpu_options" {
   description = <<EOF
   (Optional) The configuration of the CPU options to optimize the instance for specific workloads or business needs. You can specify these CPU options during instance launch. There is no additional or reduced charge for specifying CPU options. `cpu_options` block as defined below.
     (Optional) `core_count` - Sets the number of CPU cores for an instance. This option is only supported on creation of instance type that support CPU Options CPU Cores and Threads Per CPU Core Per Instance Type - specifying this option for unsupported instance types will return an error from the EC2 API.
-    (Optional) `threads_per_core` - Set the number of CPU threads per core for the instance. If set to to 1, hyperthreading is disabled on the launched instance.
+    (Optional) `threads_per_core` - Set the number of CPU threads per core for the instance. If set to 1, hyperthreading is disabled on the launched instance.
   EOF
   type = object({
     core_count       = number
@@ -447,7 +447,7 @@ variable "ami_snapshots" {
 }
 
 variable "ami_snapshots_without_reboot_enabled" {
-  description = "(Optional) Whether to overrides the behavior of stopping the instance before snapshotting. This is risky since it may cause a snapshot of an inconsistent filesystem state, but can be used to avoid downtime if the user otherwise guarantees that no filesystem writes will be underway at the time of snapshot."
+  description = "(Optional) Whether to override the behavior of stopping the instance before snapshotting. This is risky since it may cause a snapshot of an inconsistent filesystem state, but can be used to avoid downtime if the user otherwise guarantees that no filesystem writes will be underway at the time of snapshot."
   type        = bool
   default     = true
   nullable    = false
@@ -472,7 +472,7 @@ variable "tags" {
 }
 
 variable "module_tags_enabled" {
-  description = "(Optional) Whether to create AWS Resource Tags for the module informations."
+  description = "(Optional) Whether to create AWS Resource Tags for the module information."
   type        = bool
   default     = true
   nullable    = false
