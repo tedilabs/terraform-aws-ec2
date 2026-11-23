@@ -238,7 +238,7 @@ variable "user_data" {
     (Optional) `mime_enabled` - Whether to use Multipart MIME for the user-data format. Defaults to `false`.
     (Optional) `mime_parts` - A list of parts to produce multipart MIME messages of cloud-init. Only required if `mime_enabled` is `true`. Each item of `mime_parts` as defined below.
       (Required) `content` - A body content for the part.
-      (Optional) `content_type` - A MIME-style content type to report in the header for the part. Valid values are `cloud-boothook`, `cloud-config`, `cloud-config-archive`, `cloud-cnofig-jsonp`, `jinja2`, `part-handler`, `x-include-once-url`, `x-include-url`, `x-shellscript`, `x-shellscript-per-boot`, `x-shellscript-per-instance`, `x-shellscript-per-once`.
+      (Optional) `content_type` - A MIME-style content type to report in the header for the part. Valid values are `cloud-boothook`, `cloud-config`, `cloud-config-archive`, `cloud-config-jsonp`, `jinja2`, `part-handler`, `x-include-once-url`, `x-include-url`, `x-shellscript`, `x-shellscript-per-boot`, `x-shellscript-per-instance`, `x-shellscript-per-once`.
       (Optional) `merge_type` - A value for the `X-Merge-Type` header of the part, to control cloud-init merging behavior.
       (Optional) `filename` - A filename to report in the header for the part.
   EOF
@@ -270,7 +270,7 @@ variable "user_data" {
       ], try(part.content_type, "x-shellscript"))
       if try(var.user_data.mime_enabled, false)
     ])
-    error_message = "Valid values for `content_type` are `cloud-boothook`, `cloud-config`, `cloud-config-archive`, `cloud-cnofig-jsonp`, `jinja2`, `part-handler`, `x-include-once-url`, `x-include-url`, `x-shellscript`, `x-shellscript-per-boot`, `x-shellscript-per-instance`, `x-shellscript-per-once`."
+    error_message = "Valid values for `content_type` are `cloud-boothook`, `cloud-config`, `cloud-config-archive`, `cloud-config-jsonp`, `jinja2`, `part-handler`, `x-include-once-url`, `x-include-url`, `x-shellscript`, `x-shellscript-per-boot`, `x-shellscript-per-instance`, `x-shellscript-per-once`."
   }
 }
 
