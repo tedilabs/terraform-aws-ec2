@@ -45,7 +45,7 @@ variable "default_instance_profile" {
   description = <<EOF
   (Optional) A configuration for the default instance profile of the instance. Use `instance_profile` if `default_instance_profile.enabled` is `false`. `default_instance_profile` block as defined below.
     (Optional) `enabled` - Whether to create the default instance profile. Defaults to `true`.
-    (Optional) `name` - The name for the default instance profile. Defaults to `ec2-$${var.name}`.
+    (Optional) `name` - The name for the default instance profile. Defaults to `ec2-instance-$${var.name}`.
     (Optional) `path` - The path for the default instance profile.
     (Optional) `description` - The description of the default instance profile.
     (Optional) `assumable_roles` - A set of IAM role ARNs that can be assumed by this role. Defaults to `[]`.
@@ -306,8 +306,8 @@ variable "cpu_options" {
     (Optional) `threads_per_core` - Set the number of CPU threads per core for the instance. If set to 1, hyperthreading is disabled on the launched instance.
   EOF
   type = object({
-    core_count       = number
-    threads_per_core = number
+    core_count       = optional(number)
+    threads_per_core = optional(number)
   })
   default = null
 }
