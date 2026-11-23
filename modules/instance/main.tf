@@ -191,9 +191,9 @@ resource "aws_instance" "this" {
   }
 
   timeouts {
-    create = var.timeouts.create
-    update = var.timeouts.update
-    delete = var.timeouts.delete
+    create = lookup(var.timeouts, "create", "10m")
+    update = lookup(var.timeouts, "update", "10m")
+    delete = lookup(var.timeouts, "delete", "20m")
   }
 
   tags = merge(
@@ -358,8 +358,8 @@ resource "aws_spot_instance_request" "this" {
   }
 
   timeouts {
-    create = var.timeouts.create
-    delete = var.timeouts.delete
+    create = lookup(var.timeouts, "create", "10m")
+    delete = lookup(var.timeouts, "delete", "20m")
   }
 
   tags = merge(

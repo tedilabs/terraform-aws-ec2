@@ -67,8 +67,8 @@ variable "filter" {
     error_message = "`filter.resource_tags` requires at least one tag for `INCLUSION` mode."
   }
   validation {
-    condition     = length(var.filter.resource_tags) <= 50
-    error_message = "`filter.resource_tags` can have up to 50 tags."
+    condition     = length(var.filter.resource_tags) <= (var.filter.mode == "EXCLUSION" ? 5 : 50)
+    error_message = "`filter.resource_tags` can have up to 50 tags for `INCLUSION` mode, and up to 5 tags for `EXCLUSION` mode."
   }
 }
 
