@@ -231,7 +231,7 @@ variable "dns_resource_name_ipv6_enabled" {
 
 variable "user_data" {
   description = <<EOF
-  (Optional) The configuration for metadata of the instance. `metadata_options` block as defined below.
+  (Optional) The configuration for user-data of the instance. `user_data` block as defined below.
     (Optional) `replace_on_change` - Whether to trigger a destroy and recreate when user data is changed. Defaults to `false`.
     (Optional) `encoding` - A method to encode the content of user-data to delivery. Valid values are `PLAINTEXT`, `BASE64` or `BASE64_GZIP`. Defaults to `PLAINTEXT`.
     (Optional) `content` - A content of user-data for shell script or cloud-config. Only required if `mime_enabled` is `false`.
