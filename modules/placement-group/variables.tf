@@ -31,6 +31,11 @@ variable "partition_size" {
   type        = number
   default     = 2
   nullable    = false
+
+  validation {
+    condition     = var.strategy != "PARTITION" || (var.partition_size >= 1 && var.partition_size <= 7)
+    error_message = "`partition_size` must be between 1 and 7 when `strategy` is `PARTITION`."
+  }
 }
 
 variable "spread_level" {
