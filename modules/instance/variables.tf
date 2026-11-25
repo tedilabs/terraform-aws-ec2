@@ -455,12 +455,12 @@ variable "ami_snapshots_without_reboot_enabled" {
 
 variable "timeouts" {
   description = "(Optional) How long to wait for the instance to be created/updated/deleted."
-  type        = map(string)
-  default = {
-    create = "10m"
-    update = "10m"
-    delete = "20m"
-  }
+  type = object({
+    create = optional(string, "10m")
+    update = optional(string, "10m")
+    delete = optional(string, "20m")
+  })
+  default  = {}
   nullable = false
 }
 
