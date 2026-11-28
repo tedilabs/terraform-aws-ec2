@@ -6,7 +6,7 @@ module "instance_profile" {
   count = var.default_instance_profile.enabled ? 1 : 0
 
   source  = "tedilabs/account/aws//modules/iam-role"
-  version = "~> 0.34.0"
+  version = "~> 0.35.0"
 
   name = coalesce(
     var.default_instance_profile.name,
